@@ -14,7 +14,7 @@
   {
     "scripts": 
     [
-      "src/bg/background.js"
+      "src/bg/event_page.js"
     ],
     "persistent": false
   },
