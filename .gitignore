@@ -1,0 +1,6 @@
+
+*.scssc
+
+src/popup/fire_app_log.txt
+
+src/option/fire_app_log.txt

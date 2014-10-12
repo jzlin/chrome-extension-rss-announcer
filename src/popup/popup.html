@@ -1,9 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="feedModule">
 <head>
-	<title>action page title</title>
+	<meta charset="utf-8">
+	<title>{{message.extActionTitle}}</title>
+	<link rel="stylesheet" href="css/popup.css">
+	<script type="text/javascript" src="js/angular.min.js"></script>
+	<script type="text/javascript" src="js/angular-resource.min.js"></script>
 </head>
-<body>
-action page content
+<body ng-controller="FeedCtrl">
+	<div id="popupContainer">
+		<div class="toolbar" ng-controller="toolCtrl">
+			<i class="setting" ng-click="gotoOptionPage()"></i>
+		</div>
+		<hr>
+		<div class="feed" ng-repeat="feed in feeds | orderBy:'title'">
+			<h3><a href="{{feed.link}}" target="_blank">{{feed.title}}</a></h3>
+			<div class="feed-item-list">
+				<div class="feed-item" ng-repeat="item in feed.entries">
+					<a class="titile" href="{{item.link}}" target="_blank">{{item.title}}</a>
+					<br />
+					<span class="time">{{item.publishedDate | date:'yyyy-MM-dd HH:mm'}}</span>
+					<br />
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="js/popup.js"></script>
 </body>
 </html>
