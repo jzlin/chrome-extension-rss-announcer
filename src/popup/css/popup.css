@@ -1,0 +1,3 @@
+body { margin: 0px; padding: 0px; }
+
+#popupContainer { margin: 20px; padding: 0px; width: 360px; height: 280px; overflow: auto; }
