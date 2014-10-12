@@ -1,3 +1,18 @@
-body { margin: 0px; padding: 0px; }
+body { margin: 0px; padding: 0px; font-family: "微軟正黑體", "Lucida Sans Unicode", "Lucida Grande", "Arial Narrow", sans-serif; color: #555555; background-color: #eeeeee; word-break: break-word; cursor: default; -webkit-user-select: none; }
 
-#popupContainer { margin: 20px; padding: 0px; width: 360px; height: 280px; overflow: auto; }
+a { color: #555555; text-decoration: none; }
+a:hover, a:active, a:focus { color: #888888; }
+
+#popupContainer { margin: 0px; padding: 20px; width: 360px; min-height: 280px; max-height: 480px; overflow: auto; }
+
+.toolbar { margin: 0px; padding: 0px; height: 30px; }
+.toolbar .setting { display: inline-block; width: 20px; height: 20px; margin: 5px; padding: 0px; background-image: url("../images/setting.svg"); background-size: contain; cursor: pointer; opacity: 0.5; }
+.toolbar .setting:hover { opacity: 1; border-radius: 3px; }
+
+.feed { border: 1px dashed #ddd; margin-bottom: 20px; }
+.feed h3 { background-color: #ffb866; margin: 0px; padding: 5px 0px 5px 10px; }
+
+.feed-item { margin-top: 15px; padding: 5px 10px; }
+.feed-item:hover { background-color: white; }
+.feed-item a.titile { font-size: 14px; }
+.feed-item span.time { font-size: 12px; color: #d4d4d4; }

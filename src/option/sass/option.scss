@@ -1,0 +1,27 @@
+$primary-color: #f80;
+$primary-bg-color: #eee;
+$primary-font-color: #555;
+
+@mixin linkColor($color) {
+	color: $color;
+	&:hover, &:active, &:focus {
+		color: lighten($color, 20%);
+	}
+}
+
+body 
+{
+	margin: 0px;
+	padding: 0px;
+	font-family: "微軟正黑體", "Lucida Sans Unicode", "Lucida Grande", "Arial Narrow", sans-serif;
+	color: $primary-font-color;
+	background-color: $primary-bg-color;
+	word-break: break-word;
+	cursor: default;
+	-webkit-user-select: none;
+}
+
+a {
+	@include linkColor($primary-font-color);
+	text-decoration: none;
+}

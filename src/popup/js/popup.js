@@ -17,12 +17,23 @@ feedModule.factory('FeedLoader', function ($resource) {
 feedModule.service('FeedList', function ($rootScope, FeedLoader) {
   this.get = function () {
     var feedSources = [
-      {title: 'extension', url: 'http://ithelp.ithome.com.tw/rss/question?tag=extension'}
+      {
+        title: 'extension', 
+        url: 'http://ithelp.ithome.com.tw/rss/question?tag=extension'
+      },
+      {
+        title: '鐵人賽', 
+        url: 'http://ithelp.ithome.com.tw/rss/question?tag=鐵人賽'
+      }
     ];
     if (feeds.length === 0) {
       for (var i = 0; i < feedSources.length; i++) {
         FeedLoader.fetch({q: feedSources[i].url, num: 10}, {}, function (data) {
           var feed = data.responseData.feed;
+          for (var j = 0; j < feed.entries.length; j++) {
+            var publishedDate = new Date(feed.entries[j].publishedDate);
+            feed.entries[j].publishedDate = publishedDate.getTime();
+          }
           feeds.push(feed);
         });
       }
@@ -31,10 +42,20 @@ feedModule.service('FeedList', function ($rootScope, FeedLoader) {
   };
 });
 
-feedModule.controller('FeedCtrl', function ($scope, FeedList) {
+feedModule.controller('FeedCtrl', function ($rootScope, $scope, FeedList) {
   $scope.feeds = FeedList.get();
   $scope.$on('FeedList', function (event, data) {
     $scope.feeds = data;
   });
+
+  $rootScope.message = {
+    extActionTitle: chrome.i18n.getMessage('extActionTitle')
+  };
+});
+
+feedModule.controller('toolCtrl', function ($scope) {
+  $scope.gotoOptionPage = function () {
+    window.open(chrome.extension.getURL('src/option/option.html'), '_blank');
+  };
 });
 

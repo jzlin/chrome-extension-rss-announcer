@@ -1,0 +1,4 @@
+body { margin: 0px; padding: 0px; font-family: "微軟正黑體", "Lucida Sans Unicode", "Lucida Grande", "Arial Narrow", sans-serif; color: #555555; background-color: #eeeeee; word-break: break-word; cursor: default; -webkit-user-select: none; }
+
+a { color: #555555; text-decoration: none; }
+a:hover, a:active, a:focus { color: #888888; }
