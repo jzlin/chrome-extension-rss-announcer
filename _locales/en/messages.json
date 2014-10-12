@@ -6,12 +6,12 @@
   },
   "extDescription": 
   {
-    "message":"",
+    "message":"Providing the voice to read the rss article content",
     "description":"Extension Description"
   },
   "extActionTitle": 
   {
-    "message":"",
+    "message":"RSS Announcer",
     "description":"browser_action default_title"
   }
 }

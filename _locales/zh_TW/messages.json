@@ -6,12 +6,12 @@
   },
   "extDescription": 
   {
-    "message":"",
+    "message":"提供語音朗讀 RSS 文章內容",
     "description":"擴充套件描述"
   },
   "extActionTitle": 
   {
-    "message":"",
+    "message":"RSS 播音員",
     "description":"browser_action 的 default_title"
   }
 }
