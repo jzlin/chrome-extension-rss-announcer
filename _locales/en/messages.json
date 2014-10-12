@@ -1,0 +1,17 @@
+{
+  "extName": 
+  {
+    "message":"RSS Announcer",
+    "description":"Extension Name"
+  },
+  "extDescription": 
+  {
+    "message":"",
+    "description":"Extension Description"
+  },
+  "extActionTitle": 
+  {
+    "message":"",
+    "description":"browser_action default_title"
+  }
+}

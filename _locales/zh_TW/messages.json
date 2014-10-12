@@ -1,0 +1,17 @@
+{
+  "extName": 
+  {
+    "message":"RSS 播音員",
+    "description":"擴充套件名稱"
+  },
+  "extDescription": 
+  {
+    "message":"",
+    "description":"擴充套件描述"
+  },
+  "extActionTitle": 
+  {
+    "message":"",
+    "description":"browser_action 的 default_title"
+  }
+}
