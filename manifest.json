@@ -35,6 +35,8 @@
     "tts",
     "notifications",
     "tabs",
+    "storage",
+    "alarms",
     "http://*/*",
     "https://*/*"
   ]
