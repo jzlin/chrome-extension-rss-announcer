@@ -13,5 +13,25 @@
   {
     "message":"RSS 播音員",
     "description":"browser_action 的 default_title"
+  },
+  "optionTitle": 
+  {
+    "message":"設定",
+    "description":"選項頁面的標題"
+  },
+  "optionFeedManagementTitle": 
+  {
+    "message":"Feed 管理",
+    "description":"feed 管理選項標題"
+  },
+  "operationRemoveStr": 
+  {
+    "message":"移除",
+    "description":"移除操作的字串"
+  },
+  "operationAddStr": 
+  {
+    "message":"新增",
+    "description":"新增操作的字串"
   }
 }

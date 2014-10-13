@@ -2,14 +2,36 @@
 <html ng-app="optionModule">
 <head>
 	<meta charset="utf-8">
-	<title>option page title</title>
+	<title>{{messages.extActionTitle}} - {{messages.optionTitle}}</title>
 	<link rel="stylesheet" href="css/option.css">
 	<script type="text/javascript" src="js/angular.min.js"></script>
 	<script type="text/javascript" src="js/angular-resource.min.js"></script>
 </head>
-<body ng-controller="mainCtrl">
-	<div id="optionContainer">option page content
+<body ng-controller="MainCtrl">
+	<div id="optionContainer">
+		<div class="header">
+			<i class="logo"></i>
+			<span>{{messages.extActionTitle}} - {{messages.optionTitle}}</span>
+		</div>
+		<ul class="option-list">
+			<li class="option" ng-controller="FeedManagementCtrl">
+				<div class="option-title">{{messages.optionFeedManagementTitle}}</div>
+				<div class="option-content">
+					<div class="feed-info" ng-repeat="item in feedList">
+						<input class="title" type="text" ng-model="item.title" ng-change="updateFeed(item)"> -
+						<input class="url" type="url" ng-model="item.url" ng-change="updateFeed(item)">
+						<button ng-click="removeFeed(item)">{{messages.operationRemoveStr}}</button>
+					</div>
+					<div class="feed-info">
+						<input class="title" type="text" placeholder="title (ex: JZLIN'S Blog)" ng-model="feedTemp.title"> -
+						<input class="url" type="url" placeholder="url (ex: http://jzlin-blog.logdown.com/posts.atom)" ng-model="feedTemp.url">
+						<button ng-click="addFeed(feedTemp)">{{messages.operationAddStr}}</button>
+					</div>
+				</div>
+			</li>
+		</ul>
 	</div>
+	<script type="text/javascript" src="js/storage.js"></script>
 	<script type="text/javascript" src="js/option.js"></script>
 </body>
 </html>

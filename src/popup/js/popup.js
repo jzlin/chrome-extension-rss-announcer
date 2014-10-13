@@ -14,30 +14,31 @@ feedModule.factory('FeedLoader', function ($resource) {
   });
 });
 
-feedModule.service('FeedList', function ($rootScope, FeedLoader) {
+feedModule.service('Storage', function () {
+  this.get = storage.semiSync.get;
+  this.set = storage.semiSync.set;
+});
+
+feedModule.service('FeedList', function ($rootScope, FeedLoader, Storage) {
   this.get = function () {
-    var feedSources = [
-      {
-        title: 'extension', 
-        url: 'http://ithelp.ithome.com.tw/rss/question?tag=extension'
-      },
-      {
-        title: '鐵人賽', 
-        url: 'http://ithelp.ithome.com.tw/rss/question?tag=鐵人賽'
+    Storage.get('feedList', function (data) {
+      var feedSources = [];
+      if (typeof(data) === "object" && typeof(data.length) !== "undefined") {
+        feedSources = data;
       }
-    ];
-    if (feeds.length === 0) {
-      for (var i = 0; i < feedSources.length; i++) {
-        FeedLoader.fetch({q: feedSources[i].url, num: 10}, {}, function (data) {
-          var feed = data.responseData.feed;
-          for (var j = 0; j < feed.entries.length; j++) {
-            var publishedDate = new Date(feed.entries[j].publishedDate);
-            feed.entries[j].publishedDate = publishedDate.getTime();
-          }
-          feeds.push(feed);
-        });
+      if (feeds.length === 0) {
+        for (var i = 0; i < feedSources.length; i++) {
+          FeedLoader.fetch({q: feedSources[i].url, num: 10}, {}, function (data) {
+            var feed = data.responseData.feed;
+            for (var j = 0; j < feed.entries.length; j++) {
+              var publishedDate = new Date(feed.entries[j].publishedDate);
+              feed.entries[j].publishedDate = publishedDate.getTime();
+            }
+            feeds.push(feed);
+          });
+        }
       }
-    }
+    });
     return feeds;
   };
 });
@@ -48,12 +49,12 @@ feedModule.controller('FeedCtrl', function ($rootScope, $scope, FeedList) {
     $scope.feeds = data;
   });
 
-  $rootScope.message = {
+  $rootScope.messages = {
     extActionTitle: chrome.i18n.getMessage('extActionTitle')
   };
 });
 
-feedModule.controller('toolCtrl', function ($scope) {
+feedModule.controller('ToolCtrl', function ($scope) {
   $scope.gotoOptionPage = function () {
     window.open(chrome.extension.getURL('src/option/option.html'), '_blank');
   };

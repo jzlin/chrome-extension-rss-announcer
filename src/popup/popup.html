@@ -2,14 +2,14 @@
 <html ng-app="feedModule">
 <head>
 	<meta charset="utf-8">
-	<title>{{message.extActionTitle}}</title>
+	<title>{{messages.extActionTitle}}</title>
 	<link rel="stylesheet" href="css/popup.css">
 	<script type="text/javascript" src="js/angular.min.js"></script>
 	<script type="text/javascript" src="js/angular-resource.min.js"></script>
 </head>
 <body ng-controller="FeedCtrl">
 	<div id="popupContainer">
-		<div class="toolbar" ng-controller="toolCtrl">
+		<div class="toolbar" ng-controller="ToolCtrl">
 			<i class="setting" ng-click="gotoOptionPage()"></i>
 		</div>
 		<hr>
@@ -25,6 +25,7 @@
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript" src="js/storage.js"></script>
 	<script type="text/javascript" src="js/popup.js"></script>
 </body>
 </html>

@@ -1,4 +1,21 @@
-body { margin: 0px; padding: 0px; font-family: "微軟正黑體", "Lucida Sans Unicode", "Lucida Grande", "Arial Narrow", sans-serif; color: #555555; background-color: #eeeeee; word-break: break-word; cursor: default; -webkit-user-select: none; }
+body { margin: 0px; padding: 0px; font-family: "微軟正黑體", "Lucida Sans Unicode", "Lucida Grande", "Arial Narrow", sans-serif; color: #555555; background-color: #eeeeee; word-break: break-word; cursor: default; -webkit-user-select: none; text-align: center; }
 
 a { color: #555555; text-decoration: none; }
 a:hover, a:active, a:focus { color: #888888; }
+
+.logo { width: 48px; height: 48px; background-image: url("chrome-extension://__MSG_@@extension_id__/icons/icon48.png"); background-size: contain; }
+
+#optionContainer { display: inline-block; width: 640px; min-height: 280px; margin: 30px auto; background-color: #fff; border-radius: 5px; position: relative; }
+#optionContainer .header { width: 100%; height: 50px; padding: 0px 10px; background-color: #ffe7cc; border-radius: 5px 5px 0px 0px; box-sizing: border-box; text-align: left; }
+#optionContainer .header .logo { display: inline-block; width: 32px; height: 32px; margin-top: 9px; margin-right: 10px; border-radius: 100%; background-color: white; }
+#optionContainer .header span { font-size: 1.2rem; line-height: 50px; height: 50px; vertical-align: top; }
+
+ul.option-list { margin: 0px; padding: 0px; list-style-type: none; display: block; position: relative; }
+
+.option { margin: 15px; border: 1px dashed #eeeeee; box-sizing: border-box; position: relative; }
+.option .option-title { font-size: 14px; line-height: 2em; height: 2em; background-color: #fff3e5; }
+.option .option-content { padding: 15px; min-height: 50px; background-color: #eeeeee; }
+
+.feed-info { text-align: left; margin-bottom: 15px; }
+.feed-info .title { width: 120px; }
+.feed-info .url { width: 360px; }
