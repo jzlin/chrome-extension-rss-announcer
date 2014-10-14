@@ -10,11 +10,13 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "content_security_policy": "default-src 'self'; script-src 'self' https://ajax.googleapis.com 'unsafe-eval'; style-src * 'unsafe-inline';",
+  "content_security_policy": "default-src 'self'; script-src 'self' https://ajax.googleapis.com https://www.google.com 'unsafe-eval'; style-src * 'unsafe-inline';",
   "background": 
   {
     "scripts": 
     [
+      "src/bg/jsapi.js",
+      "src/bg/storage.js",
       "src/bg/event_page.js"
     ],
     "persistent": false
@@ -29,6 +31,18 @@
     },
     "default_title": "__MSG_extActionTitle__",
     "default_popup": "src/popup/popup.html"
+  },
+  "commands" : {
+    "reload_extension" : {
+      "suggested_key" : {
+        "default" : "Ctrl+Shift+Q",
+        "windows" : "Ctrl+Shift+Q",
+        "mac" : "MacCtrl+Shift+Q",
+        "chromeos" : "Ctrl+Shift+Q",
+        "linux" : "Ctrl+Shift+Q"
+      },
+      "description" : "shortcut for reloading extensions"
+    }
   },
   "permissions": 
   [
