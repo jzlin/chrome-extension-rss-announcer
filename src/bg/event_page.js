@@ -19,7 +19,7 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 
 chrome.alarms.create('getFeed', {
   when: new Date('2014-10-01').getTime(),
-  periodInMinutes: 1
+  periodInMinutes: 15
 });
 
 google.load("feeds", "1");
@@ -27,6 +27,16 @@ google.load("feeds", "1");
 var storageInBG = storage.local;
 
 var feeds = [];
+
+function AddFeed(feed) {
+  for (var i = 0; i < feeds.length; i++) {
+    if (feed.feedUrl === feeds[i].feedUrl) {
+      feeds[i] = feed;
+      return;
+    }
+  }
+  feeds.push(feed);
+}
 
 function FeedLoader(params, callback) {
   if (typeof(params) !== 'object' || 
@@ -55,26 +65,24 @@ function getFeed() {
     if (typeof(data) === "object" && typeof(data.length) !== "undefined") {
       feedSources = data;
     }
-    if (feeds.length === 0) {
-      for (var i = 0; i < feedSources.length; i++) {
-        FeedLoader({q: feedSources[i].url, num: 10}, function (data) {
-          if (typeof(data) !== 'object' ||
-            typeof(data.error) === 'object') {
-            console.error(data.error.message);
+    for (var i = 0; i < feedSources.length; i++) {
+      FeedLoader({q: feedSources[i].url, num: 10}, function (data) {
+        if (typeof(data) !== 'object' ||
+          typeof(data.error) === 'object') {
+          console.error(data.error.message);
+        }
+        else {
+          var feed = data.feed;
+          for (var j = 0; j < feed.entries.length; j++) {
+            var publishedDate = new Date(feed.entries[j].publishedDate);
+            feed.entries[j].publishedDate = publishedDate.getTime();
           }
-          else {
-            var feed = data.feed;
-            for (var j = 0; j < feed.entries.length; j++) {
-              var publishedDate = new Date(feed.entries[j].publishedDate);
-              feed.entries[j].publishedDate = publishedDate.getTime();
-            }
-            feeds.push(feed);
-            if (feeds.length !== 0) {
-              storageInBG.set('feeds', feeds);
-            }
+          AddFeed(feed);
+          if (feeds.length !== 0) {
+            storageInBG.set('feeds', feeds);
           }
-        });
-      }
+        }
+      });
     }
   });
 }
