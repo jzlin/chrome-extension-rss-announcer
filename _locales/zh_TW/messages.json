@@ -33,5 +33,37 @@
   {
     "message":"新增",
     "description":"新增操作的字串"
+  },
+  "newFeedsNotificationTitle": 
+  {
+    "message":"$feedName$ 已更新!",
+    "description":"新文章通知標題",
+    "placeholders": {
+      "feedName": {
+        "content": "$1",
+        "example": "JZLIN BLOG"
+      }
+    }
+  },
+  "newFeedsNotificationMsg": 
+  {
+    "message":"$articlesNum$ 篇新文章",
+    "description":"新文章通知訊息",
+    "placeholders": {
+      "articlesNum": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "newFeedsNotificationPlayBtnTitle": 
+  {
+    "message":"播放",
+    "description":"新文章通知的播放按鈕標題"
+  },
+  "newFeedsNotificationCloseBtnTitle": 
+  {
+    "message":"關閉",
+    "description":"新文章通知的關閉按鈕標題"
   }
 }

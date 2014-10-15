@@ -33,5 +33,37 @@
   {
     "message":"Add",
     "description":"add operation string"
+  },
+  "newFeedsNotificationTitle": 
+  {
+    "message":"$feedName$ was update!",
+    "description":"new feeds notification title",
+    "placeholders": {
+      "feedName": {
+        "content": "$1",
+        "example": "JZLIN BLOG"
+      }
+    }
+  },
+  "newFeedsNotificationMsg": 
+  {
+    "message":"$num$ new articles",
+    "description":"new feeds notification message",
+    "placeholders": {
+      "num": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "newFeedsNotificationPlayBtnTitle": 
+  {
+    "message":"Play",
+    "description":"new feeds notification play button title"
+  },
+  "newFeedsNotificationCloseBtnTitle": 
+  {
+    "message":"Close",
+    "description":"new feeds notification close button title"
   }
 }
