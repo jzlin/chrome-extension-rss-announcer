@@ -56,14 +56,14 @@
       }
     }
   },
-  "newFeedsNotificationPlayBtnTitle": 
+  "newFeedsNotificationPlayNextBtnTitle": 
   {
-    "message":"播放",
-    "description":"新文章通知的播放按鈕標題"
+    "message":"接著播放",
+    "description":"新文章通知的接著播放按鈕標題"
   },
-  "newFeedsNotificationCloseBtnTitle": 
+  "newFeedsNotificationPlayNowBtnTitle": 
   {
-    "message":"關閉",
-    "description":"新文章通知的關閉按鈕標題"
+    "message":"立即播放",
+    "description":"新文章通知的立即播放按鈕標題"
   }
 }

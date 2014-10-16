@@ -1,6 +1,8 @@
 
 (function () {
 
+var maxLen = 70;
+
 chrome.commands.onCommand.addListener(function(command)
 {
   console.debug('command is : ' + command);
@@ -11,14 +13,15 @@ chrome.commands.onCommand.addListener(function(command)
 });
 
 chrome.runtime.onInstalled.addListener(function (details) {
-  // RemoveSomeFeedToTest();
+  RemoveSomeFeedToTest();
 });
 
 function RemoveSomeFeedToTest() {
   storage.local.get('feeds', function(data) {
     console.log(data);
-    data[0].entries.splice(0, 3);
-    data[1].entries.splice(0, 1);
+    for (var i = 0; i < data.length; i++) {
+      data[i].entries.splice(0, 2);
+    }
     storage.local.set('feeds', data);
   });
 }
@@ -54,7 +57,160 @@ chrome.notifications.onClicked.addListener(function (notificationId) {
 chrome.notifications.onButtonClicked.addListener(function (notificationId, buttonIndex) {
   console.log('notificationId: ' + notificationId);
   console.log('buttonIndex: ' + buttonIndex);
+  var feedUrl = notificationId.substr(('newFeedsNotification_').length);
+  console.log(feedUrl);
+  if (buttonIndex === 1) {
+    chrome.tts.stop();
+  }
+  GetFeedByUrl(feedUrl, function (feed) {
+    console.log(feed);
+    SpeakFeed(feed);
+  });
 });
+
+function GetSentences(content) {
+  if (typeof(content) === 'undefined' || typeof(content.substr) !== 'function') {
+    return [];
+  }
+  var spliters = content.match(/[\⋯\·\．\，\。\！\？\：\；\,\;\n\.\!\?\:]/g);
+  var sentences = [];
+  while (content.length > 0) {
+    var sentence = undefined;
+    var spliter = (spliters != null && spliters.length > 0) ? 
+      spliters[0] : undefined;
+    if (typeof(spliter) !== 'undefined') {
+      var idx = content.indexOf(spliter);
+      // 若 spliter 為起始位置，則去掉起始位置的 spliter 再重來。
+      if (idx === 0) {
+        content = content.substr(spliter.length);
+        spliters.splice(0, 1);
+        if (sentences.length > 0) {
+          sentences[sentences.length - 1] += spliter;
+        }
+        continue;
+      }
+      else if ((idx + spliter.length) <= content.length) {
+        sentence = content.slice(0, idx) + spliter;
+        content = content.substr(idx + spliter.length);
+        spliters.splice(0, 1);
+      }
+      else {
+        content = '';
+      }
+    }
+    else {
+      sentence = content;
+      content = '';
+    }
+    if (typeof(sentence) !== 'undefined') {
+      if (sentence.length <= maxLen) {
+        sentences.push(sentence);
+      }
+      else {
+        while (sentence.length > 0) {
+          var subSentence = undefined;
+          if (sentence.length > maxLen) {
+            subSentence = sentence.slice(0, maxLen);
+            sentence = sentence.substr(maxLen);
+          }
+          else {
+            subSentence = sentence;
+            sentence = '';
+          }
+          if (typeof(subSentence) !== 'undefined') {
+            sentences.push(subSentence);
+          }
+        }
+      }
+    }
+  }
+  return sentences;
+}
+
+window.SpeakFeed = SpeakFeed;
+function SpeakFeed(feed) {
+  console.log('enter SpeakFeed');
+  console.log(feed);
+  // chrome.tts.stop();
+  for (var i = 0; i < feed.entries.length; i++) {
+    var entry = feed.entries[i];
+    SpeakEntry(entry);
+  }
+}
+
+window.SpeakEntry = SpeakEntry;
+function SpeakEntry(entry) {
+  var divElement = document.createElement("DIV");
+  divElement.style.cssText = "display: none;";
+  divElement.innerHTML = entry.content;
+  var content = divElement.innerText.trim() || entry.contentSnippet;
+  var sentences = GetSentences(content);
+  var haveContent = typeof(content) !== 'undefined' && content.trim().length > 0;
+  
+  var introduction = "接下來為您播放的是：" 
+                    + (entry.author.length > 0 ? 
+                      "由 " + entry.author + " 撰寫的" : "")
+                    + "『" + entry.title + "』。"
+  
+  var noContentMessage = "無法讀取" 
+                        + (entry.author.length > 0 ? 
+                          "由 " + entry.author + " 撰寫的" : "")
+                        + "『" + entry.title + "』。"
+
+  if (haveContent) {
+    SpeakSentences(GetSentences(introduction));
+  }
+  else {
+    SpeakSentences(GetSentences(noContentMessage));
+  }
+  // console.log(content);
+  // console.log(sentences);
+  SpeakSentences(sentences);
+  // 文章結束後的休息時間
+  if (haveContent) {
+    for (var j = 0; j < 5; j++) {
+      SpeakText('');
+    }
+  }
+}
+
+function SpeakSentences(sentences) {
+  if (typeof(sentences) !== 'undefined' || sentences.length > 0) {
+    for (var i = 0; i < sentences.length; i++) {
+      var sentence = sentences[i].trim();
+      if (sentence !== '') {
+        SpeakText(sentence);
+      }
+    }
+  }
+}
+
+function SpeakText(text) {
+  if (typeof(text) === 'undefined') {
+    return;
+  }
+  if (text.length > maxLen) {
+    SpeakText(text.slice(0, maxLen));
+    SpeakText(text.substr(maxLen));
+    return;
+  }
+  console.log('will speak: ' + text)
+  chrome.tts.speak(text, {
+    lang: 'zh-CN', 
+    rate: 1.0, 
+    enqueue: true,
+    onEvent: function (event) {
+      // console.log("在位置 " + event.charIndex + " 處產生事件 " + event.type);
+      if (event.type === 'error') {
+        console.log('錯誤：' + event.errorMessage);
+      }
+    }
+  }, function() {
+    if (chrome.runtime.lastError) {
+      console.log('Error：' + chrome.runtime.lastError.message);
+    }
+  });
+}
 
 function CheckFeedsDifferent(oldValue, newValue) {
   var newFeeds = [];
@@ -121,11 +277,11 @@ function NewRSSNotifications(newFeeds) {
       // eventTime: Date.now(),
       buttons: [
         {
-          title: chrome.i18n.getMessage('newFeedsNotificationPlayBtnTitle'),
+          title: chrome.i18n.getMessage('newFeedsNotificationPlayNextBtnTitle'),
           iconUrl: ''
         },
         {
-          title: chrome.i18n.getMessage('newFeedsNotificationCloseBtnTitle'),
+          title: chrome.i18n.getMessage('newFeedsNotificationPlayNowBtnTitle'),
           iconUrl: ''
         }
       ],
@@ -226,6 +382,24 @@ function GetFeed() {
           }
         }
       });
+    }
+  });
+}
+
+function GetFeedByUrl(feedUrl, callback) {
+  storageInBG.get('feeds', function (data) {
+    var feedSources = [];
+    if (typeof(data) === "object" && typeof(data.length) !== "undefined") {
+      feedSources = data;
+    }
+    console.log(feedSources);
+    for (var i = 0; i < feedSources.length; i++) {
+      if (feedSources[i].feedUrl === feedUrl) {
+        if (typeof(callback) === 'function') {
+          callback(feedSources[i]);
+        }
+        break;
+      }
     }
   });
 }

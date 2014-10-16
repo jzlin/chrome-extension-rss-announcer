@@ -5,16 +5,33 @@ body { margin: 0px; padding: 0px; font-family: "微軟正黑體", "Lucida Sans U
 a { color: #555555; text-decoration: none; }
 a:hover, a:active, a:focus { color: #888888; }
 
-#popupContainer { margin: 0px; padding: 20px; width: 360px; min-height: 280px; max-height: 480px; overflow: auto; }
+#popupContainer { margin: 0px; padding: 0px; width: 360px; position: relative; overflow: hidden; }
 
-.toolbar { margin: 0px; padding: 0px; height: 30px; }
-.toolbar .setting { display: inline-block; width: 20px; height: 20px; margin: 5px; padding: 0px; background-image: url("../images/setting.svg"); background-size: contain; cursor: pointer; opacity: 0.5; }
-.toolbar .setting:hover { opacity: 1; border-radius: 3px; }
+.logo { display: inline-block; vertical-align: top; height: 30px; font-size: 20px; }
+.logo i { display: inline-block; width: 30px; height: 30px; background-image: url("chrome-extension://__MSG_@@extension_id__/icons/icon48.png"); background-size: contain; background-repeat: no-repeat; }
+
+.setting { background-image: url("../images/setting.svg"); }
+
+.play { background-image: url("../images/play.svg"); }
+
+.pause { background-image: url("../images/pause.svg"); }
+
+.stop { background-image: url("../images/stop.svg"); }
+
+.toolbar { margin: 0px; padding: 20px 35px 10px 20px; height: 30px; background-color: #eeeeee; z-index: 1; border-bottom: 1px solid #555; box-shadow: 0px 1px 5px 0px; }
+.toolbar .setting, .toolbar .play, .toolbar .pause, .toolbar .stop { display: inline-block; width: 26px; height: 26px; margin: 2px; padding: 0px; background-size: contain; background-repeat: no-repeat; cursor: pointer; opacity: 0.5; }
+.toolbar .setting:hover, .toolbar .play:hover, .toolbar .pause:hover, .toolbar .stop:hover { opacity: 1; border-radius: 3px; }
+.toolbar .float-right { float: right; }
+
+#feedContainer { margin: 0px; padding: 20px; min-height: 280px; max-height: 480px; overflow: auto; }
 
 .feed { border: 1px dashed #ddd; margin-bottom: 20px; }
 .feed h3 { background-color: #ffb866; margin: 0px; padding: 5px 0px 5px 10px; }
 
-.feed-item { margin-top: 15px; padding: 5px 10px; }
+.feed-item { margin-top: 15px; padding: 5px 10px; position: relative; }
 .feed-item:hover { background-color: white; }
 .feed-item a.titile { font-size: 14px; }
 .feed-item span.time { font-size: 12px; color: #d4d4d4; }
+.feed-item span.author { font-size: 12px; color: #a2a2a2; }
+.feed-item .play { width: 20px; height: 20px; position: absolute; right: 5px; bottom: 5px; margin: 2px; padding: 0px; background-size: contain; background-repeat: no-repeat; cursor: pointer; opacity: 0.5; }
+.feed-item .play:hover { opacity: 1; border-radius: 3px; }
