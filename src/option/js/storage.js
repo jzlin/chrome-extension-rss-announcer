@@ -13,7 +13,7 @@ function StorageSync() {
 	function get(key, callback) {
 		chrome.storage.sync.get(function(obj) {
 			var val = typeof(obj) === 'object' ? obj[key] : undefined;
-			if (callback) {
+			if (typeof(callback) === 'function') {
 				callback(val);
 			}
 		});
@@ -25,7 +25,7 @@ function StorageSync() {
 			}
 			obj[key] = value;
 			chrome.storage.sync.set(obj, function(newObj) {
-				if (callback) {
+				if (typeof(callback) === 'function') {
 					callback(obj[key]);
 				}
 			});
@@ -54,7 +54,7 @@ function StorageLocal() {
 	function get(key, callback) {
 		chrome.storage.local.get(function(obj) {
 			var val = typeof(obj) === 'object' ? obj[key] : undefined;
-			if (callback) {
+			if (typeof(callback) === 'function') {
 				callback(val);
 			}
 		});
@@ -66,7 +66,7 @@ function StorageLocal() {
 			}
 			obj[key] = value;
 			chrome.storage.local.set(obj, function(newObj) {
-				if (callback) {
+				if (typeof(callback) === 'function') {
 					callback(obj[key]);
 				}
 			});
@@ -129,7 +129,7 @@ function StorageSemiSync() {
 			// 如果 local 有資料，就先回傳。
 			if (typeof(obj) === 'object')
 			{
-				if (callback) {
+				if (typeof(callback) === 'function') {
 					callback(obj);
 				}
 			}
@@ -177,7 +177,7 @@ function StorageSemiSync() {
 						// console.log('%c' + key + ' had updated to local from sync!', 'color:red; font-weight: bold');
 					});
 				}
-				if (callback) {
+				if (typeof(callback) === 'function') {
 					callback(obj);
 				}
 			});

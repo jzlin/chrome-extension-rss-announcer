@@ -56,14 +56,14 @@
       }
     }
   },
-  "newFeedsNotificationPlayBtnTitle": 
+  "newFeedsNotificationPlayNextBtnTitle": 
   {
-    "message":"Play",
-    "description":"new feeds notification play button title"
+    "message":"Play Next",
+    "description":"new feeds notification play next button title"
   },
-  "newFeedsNotificationCloseBtnTitle": 
+  "newFeedsNotificationPlayNowBtnTitle": 
   {
-    "message":"Close",
-    "description":"new feeds notification close button title"
+    "message":"Play Now",
+    "description":"new feeds notification play now button title"
   }
 }

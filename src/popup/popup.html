@@ -10,17 +10,29 @@
 <body ng-controller="FeedCtrl">
 	<div id="popupContainer">
 		<div class="toolbar" ng-controller="ToolCtrl">
-			<i class="setting" ng-click="gotoOptionPage()"></i>
+			<span class="logo">
+				<i></i>
+				{{messages.extActionTitle}}
+			</span>
+			<i class="float-right setting" ng-click="gotoOptionPage()"></i>
+			<i class="float-right stop" ng-click="controlPlayer('stop')"></i>
+			<i class="float-right pause" ng-click="controlPlayer('pause')"></i>
+			<i class="float-right play" ng-click="controlPlayer('play')"></i>
 		</div>
-		<hr>
-		<div class="feed" ng-repeat="feed in feeds | orderBy:'title'">
-			<h3><a href="{{feed.link}}" target="_blank">{{feed.title}}</a></h3>
-			<div class="feed-item-list">
-				<div class="feed-item" ng-repeat="item in feed.entries">
-					<a class="titile" href="{{item.link}}" target="_blank">{{item.title}}</a>
-					<br />
-					<span class="time">{{item.publishedDate | date:'yyyy-MM-dd HH:mm'}}</span>
-					<br />
+		<div id="feedContainer">
+			<div class="feed" ng-repeat="feed in feeds | orderBy:'title'">
+				<h3>
+					<a href="{{feed.link}}" target="_blank">{{feed.title}}</a>
+				</h3>
+				<div class="feed-item-list">
+					<div class="feed-item" ng-repeat="item in feed.entries">
+						<a class="titile" href="{{item.link}}" target="_blank">{{item.title}}</a>
+						<span class="author" ng-show="{{item.author.length > 0}}"> - {{item.author}}</span>
+						<br />
+						<span class="time">{{item.publishedDate | date:'yyyy-MM-dd HH:mm'}}</span>
+						<br />
+						<i class="play" ng-click="playEntry(item)"></i>
+					</div>
 				</div>
 			</div>
 		</div>
