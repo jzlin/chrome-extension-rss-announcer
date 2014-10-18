@@ -100,5 +100,57 @@
   {
     "message":"Play Now",
     "description":"new feeds notification play now button title"
+  },
+  "ttsIntroduction": 
+  {
+    "message":"Then as you play is 『$title$』。",
+    "description":"introduction before reading",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "example title"
+      }
+    }
+  },
+  "ttsIntroductionWithAuthor": 
+  {
+    "message":"Then as you play is 『$title$』 written by $author$.",
+    "description":"introduction before reading (with author)",
+    "placeholders": {
+      "author": {
+        "content": "$1",
+        "example": "RSS Announcer"
+      },
+      "title": {
+        "content": "$2",
+        "example": "example title"
+      }
+    }
+  },
+  "ttsReadFail": 
+  {
+    "message":"Unable to read 『$title$』。",
+    "description":"failed to read the description",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "example title"
+      }
+    }
+  },
+  "ttsReadFailWithAuthor": 
+  {
+    "message":"Unable to read 『$title$』 written by $author$.",
+    "description":"failed to read the description (with author)",
+    "placeholders": {
+      "author": {
+        "content": "$1",
+        "example": "RSS Announcer"
+      },
+      "title": {
+        "content": "$2",
+        "example": "example title"
+      }
+    }
   }
 }
