@@ -31,7 +31,10 @@
 						<br />
 						<span class="time">{{item.publishedDate | date:'yyyy-MM-dd HH:mm'}}</span>
 						<br />
-						<i class="play" ng-click="playEntry(item)"></i>
+						<div class="control-bar">
+							<i class="add" ng-click="playEntry(item)"></i>
+							<i class="play" ng-click="playEntry(item, true)"></i>
+						</div>
 					</div>
 				</div>
 			</div>

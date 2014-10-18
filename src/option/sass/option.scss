@@ -115,9 +115,31 @@ ul.option-list
 	.title 
 	{
 		width: 120px;
+		vertical-align: top;
 	}
 	.url 
 	{
 		width: 360px;
+		vertical-align: top;
+	}
+}
+
+.ctrl_wrap 
+{
+	margin: 18px 8px;
+	.title
+	{
+		width: 60px;
+		text-align: left;
+		display: inline-block;
+	}
+	.ctrl 
+	{
+		width: 200px;
+	}
+	.value
+	{
+		width: 50px;
+		display: inline-block;
 	}
 }

@@ -76,6 +76,10 @@ a
 {
 	background-image: url('../images/stop.svg');
 }
+.add 
+{
+	background-image: url('../images/add.svg');
+}
 
 .toolbar 
 {
@@ -102,6 +106,12 @@ a
 			opacity: 1;
 			border-radius: 3px;
 		}
+	}
+	.setting
+	{
+		width: 22px;
+		height: 22px;
+		margin: 4px;
 	}
 	.float-right 
 	{
@@ -157,13 +167,18 @@ a
 		font-size: 12px;
 		color: lighten($primary-font-color, 30%);
 	}
-	.play 
+	.control-bar
 	{
-		width: 20px;
-		height: 20px;
 		position: absolute;
 		right: 5px;
 		bottom: 5px;
+		height: 20px;
+	}
+	.play, .add
+	{
+		display: inline-block;
+		width: 16px;
+		height: 16px;
 		margin: 2px;
 		padding: 0px;
 		background-size: contain;

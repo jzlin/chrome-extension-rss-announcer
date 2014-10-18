@@ -18,9 +18,12 @@ a:hover, a:active, a:focus { color: #888888; }
 
 .stop { background-image: url("../images/stop.svg"); }
 
+.add { background-image: url("../images/add.svg"); }
+
 .toolbar { margin: 0px; padding: 20px 35px 10px 20px; height: 30px; background-color: #eeeeee; z-index: 1; border-bottom: 1px solid #555; box-shadow: 0px 1px 5px 0px; }
 .toolbar .setting, .toolbar .play, .toolbar .pause, .toolbar .stop { display: inline-block; width: 26px; height: 26px; margin: 2px; padding: 0px; background-size: contain; background-repeat: no-repeat; cursor: pointer; opacity: 0.5; }
 .toolbar .setting:hover, .toolbar .play:hover, .toolbar .pause:hover, .toolbar .stop:hover { opacity: 1; border-radius: 3px; }
+.toolbar .setting { width: 22px; height: 22px; margin: 4px; }
 .toolbar .float-right { float: right; }
 
 #feedContainer { margin: 0px; padding: 20px; min-height: 280px; max-height: 480px; overflow: auto; }
@@ -33,5 +36,6 @@ a:hover, a:active, a:focus { color: #888888; }
 .feed-item a.titile { font-size: 14px; }
 .feed-item span.time { font-size: 12px; color: #d4d4d4; }
 .feed-item span.author { font-size: 12px; color: #a2a2a2; }
-.feed-item .play { width: 20px; height: 20px; position: absolute; right: 5px; bottom: 5px; margin: 2px; padding: 0px; background-size: contain; background-repeat: no-repeat; cursor: pointer; opacity: 0.5; }
-.feed-item .play:hover { opacity: 1; border-radius: 3px; }
+.feed-item .control-bar { position: absolute; right: 5px; bottom: 5px; height: 20px; }
+.feed-item .play, .feed-item .add { display: inline-block; width: 16px; height: 16px; margin: 2px; padding: 0px; background-size: contain; background-repeat: no-repeat; cursor: pointer; opacity: 0.5; }
+.feed-item .play:hover, .feed-item .add:hover { opacity: 1; border-radius: 3px; }

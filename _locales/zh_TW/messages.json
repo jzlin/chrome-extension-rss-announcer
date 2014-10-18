@@ -24,6 +24,41 @@
     "message":"Feed 管理",
     "description":"feed 管理選項標題"
   },
+  "optionAnnouncerSettingTitle": 
+  {
+    "message":"播音員設定",
+    "description":"播音員設定標題"
+  },
+  "optionAnnouncerVoiceTitle": 
+  {
+    "message":"聲音",
+    "description":"播音員聲音標題"
+  },
+  "optionAnnouncerRateTitle": 
+  {
+    "message":"速率",
+    "description":"播音員速率標題"
+  },
+  "optionAnnouncerPitchTitle": 
+  {
+    "message":"音調",
+    "description":"播音員音調標題"
+  },
+  "optionAnnouncerVolumeTitle": 
+  {
+    "message":"音量",
+    "description":"播音員音量標題"
+  },
+  "optionAnnouncerTestSpeechTitle": 
+  {
+    "message":"測試語音",
+    "description":"播音員測試語音標題"
+  },
+  "optionAnnouncerDefaultsTitle": 
+  {
+    "message":"預設值",
+    "description":"播音員預設值標題"
+  },
   "operationRemoveStr": 
   {
     "message":"移除",

@@ -24,6 +24,41 @@
     "message":"Feed Management",
     "description":"feed management title"
   },
+  "optionAnnouncerSettingTitle": 
+  {
+    "message":"Announcer Setting",
+    "description":"announcer setting title"
+  },
+  "optionAnnouncerVoiceTitle": 
+  {
+    "message":"Voice",
+    "description":"announcer voice title"
+  },
+  "optionAnnouncerRateTitle": 
+  {
+    "message":"Rate",
+    "description":"announcer rate title"
+  },
+  "optionAnnouncerPitchTitle": 
+  {
+    "message":"Pitch",
+    "description":"announcer pitch title"
+  },
+  "optionAnnouncerVolumeTitle": 
+  {
+    "message":"Volume",
+    "description":"announcer volume title"
+  },
+  "optionAnnouncerTestSpeechTitle": 
+  {
+    "message":"Test Speech",
+    "description":"announcer test speech title"
+  },
+  "optionAnnouncerDefaultsTitle": 
+  {
+    "message":"Defaults",
+    "description":"announcer defaults title"
+  },
   "operationRemoveStr": 
   {
     "message":"Remove",

@@ -3,9 +3,18 @@
 
 var maxLen = 70;
 
+localStorage['announcerSetting'] = JSON.stringify({
+  voice: {
+    lang: 'zh-CN'
+  },
+  rate: 1.0,
+  pitch: 1.0,
+  volume: 1.0
+});
+
 chrome.commands.onCommand.addListener(function(command)
 {
-  console.debug('command is : ' + command);
+  // console.debug('command is : ' + command);
 
   // Develop use : reload extension.
   if (command == 'reload_extension')
@@ -13,12 +22,13 @@ chrome.commands.onCommand.addListener(function(command)
 });
 
 chrome.runtime.onInstalled.addListener(function (details) {
-  RemoveSomeFeedToTest();
+  UpdateAnnouncerSetting();
+  // RemoveSomeFeedToTest();
 });
 
 function RemoveSomeFeedToTest() {
   storage.local.get('feeds', function(data) {
-    console.log(data);
+    // console.log(data);
     for (var i = 0; i < data.length; i++) {
       data[i].entries.splice(0, 2);
     }
@@ -42,31 +52,45 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
 
       CheckFeedsDifferent(storageChange.oldValue, storageChange.newValue);
     }
+    else if (key === 'announcerSetting') {
+      localStorage['announcerSetting'] = JSON.stringify(storageChange.newValue);
+    }
   }
 });
 
 chrome.notifications.onClosed.addListener(function (notificationId, byUser) {
-  console.log('notificationId: ' + notificationId);
-  console.log('byUser: ' + byUser);
+  // console.log('notificationId: ' + notificationId);
+  // console.log('byUser: ' + byUser);
 });
 
 chrome.notifications.onClicked.addListener(function (notificationId) {
-  console.log('notificationId: ' + notificationId);
+  // console.log('notificationId: ' + notificationId);
 });
 
 chrome.notifications.onButtonClicked.addListener(function (notificationId, buttonIndex) {
-  console.log('notificationId: ' + notificationId);
-  console.log('buttonIndex: ' + buttonIndex);
-  var feedUrl = notificationId.substr(('newFeedsNotification_').length);
-  console.log(feedUrl);
-  if (buttonIndex === 1) {
-    chrome.tts.stop();
+  // console.log('notificationId: ' + notificationId);
+  // console.log('buttonIndex: ' + buttonIndex);
+
+  if (notificationId.indexOf('newFeedsNotification_') !== -1) {
+    var feedUrl = notificationId.substr(('newFeedsNotification_').length);
+    // console.log(feedUrl);
+    if (buttonIndex === 1) {
+      chrome.tts.stop();
+    }
+    GetFeedByUrl(feedUrl, function (feed) {
+      // console.log(feed);
+      SpeakFeed(feed);
+    });
   }
-  GetFeedByUrl(feedUrl, function (feed) {
-    console.log(feed);
-    SpeakFeed(feed);
-  });
 });
+
+function UpdateAnnouncerSetting() {
+  storage.local.get('announcerSetting', function(data) {
+    if (typeof(data) !== 'undefined') {
+      localStorage['announcerSetting'] = JSON.stringify(data);
+    }
+  });
+}
 
 function GetSentences(content) {
   if (typeof(content) === 'undefined' || typeof(content.substr) !== 'function') {
@@ -78,25 +102,25 @@ function GetSentences(content) {
     var sentence = undefined;
     var spliter = (spliters != null && spliters.length > 0) ? 
       spliters[0] : undefined;
+    var doAppend = true;
     if (typeof(spliter) !== 'undefined') {
       var idx = content.indexOf(spliter);
       // 若 spliter 為起始位置，則去掉起始位置的 spliter 再重來。
       if (idx === 0) {
         content = content.substr(spliter.length);
         spliters.splice(0, 1);
-        if (sentences.length > 0) {
-          sentences[sentences.length - 1] += spliter;
-        }
         continue;
       }
       else if ((idx + spliter.length) <= content.length) {
-        sentence = content.slice(0, idx) + spliter;
+        sentence = content.slice(0, idx + spliter.length);
         content = content.substr(idx + spliter.length);
         spliters.splice(0, 1);
       }
       else {
         content = '';
       }
+      doAppend = doAppend && 
+        (['，', '。', '！', '？', '：', '!', '?', ':'].indexOf(spliter) === -1);
     }
     else {
       sentence = content;
@@ -104,7 +128,15 @@ function GetSentences(content) {
     }
     if (typeof(sentence) !== 'undefined') {
       if (sentence.length <= maxLen) {
-        sentences.push(sentence);
+        doAppend = doAppend && 
+          sentences.length > 0 &&
+          (sentences[sentences.length - 1].length + sentence.length) <= maxLen;
+        if (doAppend) {
+          sentences[sentences.length - 1] += sentence;
+        }
+        else {
+          sentences.push(sentence);
+        }
       }
       else {
         while (sentence.length > 0) {
@@ -129,8 +161,8 @@ function GetSentences(content) {
 
 window.SpeakFeed = SpeakFeed;
 function SpeakFeed(feed) {
-  console.log('enter SpeakFeed');
-  console.log(feed);
+  // console.log('enter SpeakFeed');
+  // console.log(feed);
   // chrome.tts.stop();
   for (var i = 0; i < feed.entries.length; i++) {
     var entry = feed.entries[i];
@@ -194,10 +226,16 @@ function SpeakText(text) {
     SpeakText(text.substr(maxLen));
     return;
   }
-  console.log('will speak: ' + text)
+
+  var announcerSetting = JSON.parse(localStorage['announcerSetting']);
+  // console.log('will speak: ' + text)
+  // console.log(announcerSetting);
   chrome.tts.speak(text, {
-    lang: 'zh-CN', 
-    rate: 1.0, 
+    extensionId: announcerSetting.voice.extensionId || undefined,
+    lang: announcerSetting.voice.lang || 'zh-CN', 
+    rate: announcerSetting.rate || 1.0, 
+    pitch: announcerSetting.pitch || 1.0,
+    volume: announcerSetting.volume || 1.0,
     enqueue: true,
     onEvent: function (event) {
       // console.log("在位置 " + event.charIndex + " 處產生事件 " + event.type);
@@ -262,8 +300,8 @@ function CheckFeedsDifferent(oldValue, newValue) {
 }
 
 function NewRSSNotifications(newFeeds) {
-  console.log("have new feeds");
-  console.log(newFeeds);
+  // console.log("have new feeds");
+  // console.log(newFeeds);
   for (var i = 0; i < newFeeds.length; i++) {
     var newFeed = newFeeds[i];
     var notificationId = 'newFeedsNotification_' + newFeed.feedUrl;
@@ -278,11 +316,11 @@ function NewRSSNotifications(newFeeds) {
       buttons: [
         {
           title: chrome.i18n.getMessage('newFeedsNotificationPlayNextBtnTitle'),
-          iconUrl: ''
+          iconUrl: chrome.runtime.getURL('src/popup/images/add.svg')
         },
         {
           title: chrome.i18n.getMessage('newFeedsNotificationPlayNowBtnTitle'),
-          iconUrl: ''
+          iconUrl: chrome.runtime.getURL('src/popup/images/play.svg')
         }
       ],
       items: [],
@@ -301,7 +339,7 @@ function NewRSSNotifications(newFeeds) {
       chrome.notifications.clear(notificationId, function (wasCleared) {
         // console.log('wasCleared:' + wasCleared);
         chrome.notifications.create(notificationId, options, function (notificationId) {
-          console.log(notificationId);
+          // console.log(notificationId);
         });
       });
     }(notificationId, options));
@@ -310,7 +348,7 @@ function NewRSSNotifications(newFeeds) {
 
 chrome.alarms.onAlarm.addListener(function (alarm) {
   if (alarm.name === 'GetFeed') {
-    console.log('hello: ' + new Date());
+    // console.log('hello: ' + new Date());
     // RemoveSomeFeedToTest();
     GetFeed();
   }
@@ -318,7 +356,7 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 
 chrome.alarms.create('GetFeed', {
   when: new Date('2014-10-01').getTime(),
-  periodInMinutes: 1
+  periodInMinutes: 15
 });
 
 google.load("feeds", "1");
@@ -392,7 +430,7 @@ function GetFeedByUrl(feedUrl, callback) {
     if (typeof(data) === "object" && typeof(data.length) !== "undefined") {
       feedSources = data;
     }
-    console.log(feedSources);
+    // console.log(feedSources);
     for (var i = 0; i < feedSources.length; i++) {
       if (feedSources[i].feedUrl === feedUrl) {
         if (typeof(callback) === 'function') {

@@ -17,5 +17,10 @@ ul.option-list { margin: 0px; padding: 0px; list-style-type: none; display: bloc
 .option .option-content { padding: 15px; min-height: 50px; background-color: #eeeeee; }
 
 .feed-info { text-align: left; margin-bottom: 15px; }
-.feed-info .title { width: 120px; }
-.feed-info .url { width: 360px; }
+.feed-info .title { width: 120px; vertical-align: top; }
+.feed-info .url { width: 360px; vertical-align: top; }
+
+.ctrl_wrap { margin: 18px 8px; }
+.ctrl_wrap .title { width: 60px; text-align: left; display: inline-block; }
+.ctrl_wrap .ctrl { width: 200px; }
+.ctrl_wrap .value { width: 50px; display: inline-block; }

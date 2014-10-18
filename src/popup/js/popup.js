@@ -18,8 +18,10 @@ feedModule.controller('FeedCtrl', function ($rootScope, $scope, Storage) {
     }
   });
 
-  $scope.playEntry = function (entry) {
-    chrome.tts.stop();
+  $scope.playEntry = function (entry, playNow) {
+    if (playNow) {
+      chrome.tts.stop();
+    }
     chrome.runtime.getBackgroundPage(function(window) {
       // console.log(window);
       window.SpeakEntry(entry);
@@ -34,7 +36,7 @@ feedModule.controller('FeedCtrl', function ($rootScope, $scope, Storage) {
 feedModule.controller('ToolCtrl', function ($scope) {
   $scope.controlPlayer = function (action) {
     chrome.tts.isSpeaking(function (speaking) {
-      console.log('speaking: ' + speaking);
+      // console.log('speaking: ' + speaking);
       if (action === 'stop') {
         chrome.tts.stop();
       }
