@@ -12,14 +12,14 @@ localStorage['announcerSetting'] = JSON.stringify({
   volume: 1.0
 });
 
-chrome.commands.onCommand.addListener(function(command)
-{
-  // console.debug('command is : ' + command);
+// chrome.commands.onCommand.addListener(function(command)
+// {
+//   // console.debug('command is : ' + command);
 
-  // Develop use : reload extension.
-  if (command == 'reload_extension')
-    chrome.runtime.reload();
-});
+//   // Develop use : reload extension.
+//   if (command == 'reload_extension')
+//     chrome.runtime.reload();
+// });
 
 chrome.runtime.onInstalled.addListener(function (details) {
   UpdateAnnouncerSetting();

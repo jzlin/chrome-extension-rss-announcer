@@ -8,7 +8,11 @@ feedModule.service('Storage', function () {
   this.set = storage.semiSync.set;
 });
 
-feedModule.controller('FeedCtrl', function ($rootScope, $scope, Storage) {
+feedModule.controller('FeedCtrl', [
+  '$rootScope', 
+  '$scope', 
+  'Storage', 
+  function ($rootScope, $scope, Storage) {
   $scope.feeds = [];
   Storage.get('feeds', function (data) {
     if (typeof(data) !== 'undefined' && typeof(data.length) !== 'undefined') {
@@ -31,9 +35,11 @@ feedModule.controller('FeedCtrl', function ($rootScope, $scope, Storage) {
   $rootScope.messages = {
     extActionTitle: chrome.i18n.getMessage('extActionTitle')
   };
-});
+}]);
 
-feedModule.controller('ToolCtrl', function ($scope) {
+feedModule.controller('ToolCtrl', [
+  '$scope', 
+  function ($scope) {
   $scope.controlPlayer = function (action) {
     chrome.tts.isSpeaking(function (speaking) {
       // console.log('speaking: ' + speaking);
@@ -67,7 +73,7 @@ feedModule.controller('ToolCtrl', function ($scope) {
   $scope.gotoOptionPage = function () {
     window.open(chrome.extension.getURL('src/option/option.html'), '_blank');
   };
-});
+}]);
 
 }());
 

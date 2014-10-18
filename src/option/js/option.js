@@ -19,7 +19,10 @@ optionModule.service('Storage', function () {
   };
 });
 
-optionModule.controller('MainCtrl', function ($rootScope, $scope) {
+optionModule.controller('MainCtrl', [
+	'$rootScope', 
+	'$scope', 
+	function ($rootScope, $scope) {
 
 
 	$rootScope.messages = {
@@ -36,7 +39,7 @@ optionModule.controller('MainCtrl', function ($rootScope, $scope) {
 		optionAnnouncerTestSpeechTitle: chrome.i18n.getMessage('optionAnnouncerTestSpeechTitle'),
 		optionAnnouncerDefaultsTitle: chrome.i18n.getMessage('optionAnnouncerDefaultsTitle')
 	};
-});
+}]);
 
 function FeedInfo(title, url) {
 	return {
@@ -45,7 +48,10 @@ function FeedInfo(title, url) {
 	}
 }
 
-optionModule.controller('FeedManagementCtrl', function ($scope, Storage) {
+optionModule.controller('FeedManagementCtrl', [
+	'$scope', 
+	'Storage', 
+	function ($scope, Storage) {
 	$scope.feedList = [];
 
 	// $scope.feedList.push(new FeedInfo("INSIDE", "http://www.inside.com.tw/feed"));
@@ -92,9 +98,12 @@ optionModule.controller('FeedManagementCtrl', function ($scope, Storage) {
 		}
 		Storage.set('feedList', angular.copy($scope.feedList));
 	}
-});
+}]);
 
-optionModule.controller('AnnouncerSettingCtrl', function ($scope, Storage) {
+optionModule.controller('AnnouncerSettingCtrl', [
+	'$scope', 
+	'Storage', 
+	function ($scope, Storage) {
 	$scope.voices = [];
 	$scope.myVoice;
 	$scope.myRate = 1.0;
@@ -173,6 +182,6 @@ optionModule.controller('AnnouncerSettingCtrl', function ($scope, Storage) {
 		}
 	});
 
-});
+}]);
 
 }());
