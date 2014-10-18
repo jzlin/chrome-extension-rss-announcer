@@ -100,5 +100,57 @@
   {
     "message":"立即播放",
     "description":"新文章通知的立即播放按鈕標題"
+  },
+  "ttsIntroduction": 
+  {
+    "message":"接下來為您播放的是：『$title$』。",
+    "description":"朗讀前的介紹",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "example title"
+      }
+    }
+  },
+  "ttsIntroductionWithAuthor": 
+  {
+    "message":"接下來為您播放的是：由 $author$ 撰寫的『$title$』。",
+    "description":"朗讀前的介紹 (含作者)",
+    "placeholders": {
+      "author": {
+        "content": "$1",
+        "example": "RSS Announcer"
+      },
+      "title": {
+        "content": "$2",
+        "example": "example title"
+      }
+    }
+  },
+  "ttsReadFail": 
+  {
+    "message":"無法讀取『$title$』。",
+    "description":"讀取失敗的描述",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "example title"
+      }
+    }
+  },
+  "ttsReadFailWithAuthor": 
+  {
+    "message":"無法讀取由 $author$ 撰寫的『$title$』。",
+    "description":"讀取失敗的描述 (含作者)",
+    "placeholders": {
+      "author": {
+        "content": "$1",
+        "example": "RSS Announcer"
+      },
+      "title": {
+        "content": "$2",
+        "example": "example title"
+      }
+    }
   }
 }

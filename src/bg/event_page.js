@@ -12,14 +12,14 @@ localStorage['announcerSetting'] = JSON.stringify({
   volume: 1.0
 });
 
-chrome.commands.onCommand.addListener(function(command)
-{
-  // console.debug('command is : ' + command);
+// chrome.commands.onCommand.addListener(function(command)
+// {
+//   // console.debug('command is : ' + command);
 
-  // Develop use : reload extension.
-  if (command == 'reload_extension')
-    chrome.runtime.reload();
-});
+//   // Develop use : reload extension.
+//   if (command == 'reload_extension')
+//     chrome.runtime.reload();
+// });
 
 chrome.runtime.onInstalled.addListener(function (details) {
   UpdateAnnouncerSetting();
@@ -51,6 +51,9 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
       // console.log(storageChange.newValue);
 
       CheckFeedsDifferent(storageChange.oldValue, storageChange.newValue);
+    }
+    else if (key === 'feedList') {
+      GetFeed();
     }
     else if (key === 'announcerSetting') {
       localStorage['announcerSetting'] = JSON.stringify(storageChange.newValue);
@@ -179,21 +182,19 @@ function SpeakEntry(entry) {
   var sentences = GetSentences(content);
   var haveContent = typeof(content) !== 'undefined' && content.trim().length > 0;
   
-  var introduction = "接下來為您播放的是：" 
-                    + (entry.author.length > 0 ? 
-                      "由 " + entry.author + " 撰寫的" : "")
-                    + "『" + entry.title + "』。"
+  var introduction = entry.author.length > 0 ? 
+    chrome.i18n.getMessage('ttsIntroductionWithAuthor', [entry.author, entry.title]) : 
+    chrome.i18n.getMessage('ttsIntroduction', entry.title);
   
-  var noContentMessage = "無法讀取" 
-                        + (entry.author.length > 0 ? 
-                          "由 " + entry.author + " 撰寫的" : "")
-                        + "『" + entry.title + "』。"
+  var noContentMessage = entry.author.length > 0 ? 
+    chrome.i18n.getMessage('ttsReadFailWithAuthor', [entry.author, entry.title]) : 
+    chrome.i18n.getMessage('ttsReadFail', entry.title);
 
   if (haveContent) {
-    SpeakSentences(GetSentences(introduction));
+    SpeakSentences(GetSentences(introduction), true);
   }
   else {
-    SpeakSentences(GetSentences(noContentMessage));
+    SpeakSentences(GetSentences(noContentMessage), true);
   }
   // console.log(content);
   // console.log(sentences);
@@ -206,18 +207,18 @@ function SpeakEntry(entry) {
   }
 }
 
-function SpeakSentences(sentences) {
+function SpeakSentences(sentences, toLog) {
   if (typeof(sentences) !== 'undefined' || sentences.length > 0) {
     for (var i = 0; i < sentences.length; i++) {
       var sentence = sentences[i].trim();
       if (sentence !== '') {
-        SpeakText(sentence);
+        SpeakText(sentence, toLog);
       }
     }
   }
 }
 
-function SpeakText(text) {
+function SpeakText(text, toLog) {
   if (typeof(text) === 'undefined') {
     return;
   }
@@ -228,10 +229,14 @@ function SpeakText(text) {
   }
 
   var announcerSetting = JSON.parse(localStorage['announcerSetting']);
-  // console.log('will speak: ' + text)
+  if (toLog) {
+    console.log('will speak: ' + text)
+  }
   // console.log(announcerSetting);
   chrome.tts.speak(text, {
     extensionId: announcerSetting.voice.extensionId || undefined,
+    voiceName: announcerSetting.voice.voiceName || undefined,
+    gender: announcerSetting.voice.gender || undefined,
     lang: announcerSetting.voice.lang || 'zh-CN', 
     rate: announcerSetting.rate || 1.0, 
     pitch: announcerSetting.pitch || 1.0,

@@ -1,6 +1,6 @@
 {
   "name": "__MSG_extName__",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "manifest_version": 2,
   "description": "__MSG_extDescription__",
   "default_locale": "en",
@@ -15,8 +15,8 @@
   {
     "scripts": 
     [
-      "src/bg/jsapi.js",
-      "src/bg/storage.js",
+      "js/jsapi.js",
+      "js/storage.js",
       "src/bg/event_page.js"
     ],
     "persistent": false
@@ -32,18 +32,18 @@
     "default_title": "__MSG_extActionTitle__",
     "default_popup": "src/popup/popup.html"
   },
-  "commands" : {
-    "reload_extension" : {
-      "suggested_key" : {
-        "default" : "Ctrl+Shift+Q",
-        "windows" : "Ctrl+Shift+Q",
-        "mac" : "MacCtrl+Shift+Q",
-        "chromeos" : "Ctrl+Shift+Q",
-        "linux" : "Ctrl+Shift+Q"
-      },
-      "description" : "shortcut for reloading extensions"
-    }
-  },
+  // "commands" : {
+  //   "reload_extension" : {
+  //     "suggested_key" : {
+  //       "default" : "Ctrl+Shift+Q",
+  //       "windows" : "Ctrl+Shift+Q",
+  //       "mac" : "MacCtrl+Shift+Q",
+  //       "chromeos" : "Ctrl+Shift+Q",
+  //       "linux" : "Ctrl+Shift+Q"
+  //     },
+  //     "description" : "shortcut for reloading extensions"
+  //   }
+  // },
   "permissions": 
   [
     "tts",
