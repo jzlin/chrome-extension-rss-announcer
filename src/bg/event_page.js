@@ -21,7 +21,22 @@ localStorage['announcerSetting'] = JSON.stringify({
 //     chrome.runtime.reload();
 // });
 
+function InitFeedList() {
+  var feedList = [
+    {
+      title: "JZLIN'S BLOG",
+      url: "http://jzlin-blog.logdown.com/posts.atom"
+    }
+  ];
+  storage.semiSync.get('feedList', function (data) {
+    if (typeof(data) === 'undefined' || data.length === 0) {
+      storage.semiSync.set('feedList', feedList);
+    }
+  });
+}
+
 chrome.runtime.onInstalled.addListener(function (details) {
+  InitFeedList();
   UpdateAnnouncerSetting();
   // RemoveSomeFeedToTest();
 });
@@ -33,6 +48,28 @@ function RemoveSomeFeedToTest() {
       data[i].entries.splice(0, 2);
     }
     storage.local.set('feeds', data);
+  });
+}
+
+function UpdateFeedsByFeedList () {
+  storage.local.get('feedList', function (data) {
+    var feedList = data;
+    storage.local.get('feeds', function (data) {
+      var feeds = data;
+      for (var i = feeds.length - 1; i >= 0; i--) {
+        var isRemove = true;
+        for (var j = 0; j < feedList.length; j++) {
+          if (feedList[j].url === feeds[i].feedUrl) {
+            isRemove = false;
+            break;
+          }
+        }
+        if (isRemove) {
+          feeds.splice(i, 1);
+        }
+      }
+      storage.local.set('feeds', feeds);
+    });
   });
 }
 
@@ -53,6 +90,7 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
       CheckFeedsDifferent(storageChange.oldValue, storageChange.newValue);
     }
     else if (key === 'feedList') {
+      UpdateFeedsByFeedList();
       GetFeed();
     }
     else if (key === 'announcerSetting') {
@@ -261,11 +299,13 @@ function CheckFeedsDifferent(oldValue, newValue) {
     var newFeed = newValue[i];
     var oldFeed = undefined;
     var isFeedExist = false;
-    for (var j = 0; j < oldValue.length; j++) {
-      if (newFeed.feedUrl === oldValue[j].feedUrl) {
-        oldFeed = oldValue[j];
-        isFeedExist = true;
-        break;
+    if (typeof(oldValue) !== 'undefined') {
+      for (var j = 0; j < oldValue.length; j++) {
+        if (newFeed.feedUrl === oldValue[j].feedUrl) {
+          oldFeed = oldValue[j];
+          isFeedExist = true;
+          break;
+        }
       }
     }
     if (isFeedExist && typeof(oldFeed) !== 'undefined') {
