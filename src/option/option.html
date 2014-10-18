@@ -18,6 +18,7 @@
 				<div class="option-title">{{messages.optionFeedManagementTitle}}</div>
 				<div class="option-content">
 					<div class="feed-info" ng-repeat="item in feedList">
+						<span class="index">{{$index + 1}}</span>
 						<input class="title" type="text" ng-model="item.title" ng-change="updateFeed(item)"> -
 						<input class="url" type="url" ng-model="item.url" ng-change="updateFeed(item)">
 						<button ng-click="removeFeed(item)">{{messages.operationRemoveStr}}</button>
@@ -25,6 +26,7 @@
 					<hr>
 					<br>	
 					<div class="feed-info">
+						<span class="index"></span>
 						<input class="title" type="text" placeholder="title (ex: JZLIN'S Blog)" ng-model="feedTemp.title"> -
 						<input class="url" type="url" placeholder="url (ex: http://jzlin-blog.logdown.com/posts.atom)" ng-model="feedTemp.url">
 						<button ng-click="addFeed(feedTemp)">{{messages.operationAddStr}}</button>

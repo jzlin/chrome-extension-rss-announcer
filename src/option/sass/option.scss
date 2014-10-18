@@ -112,6 +112,11 @@ ul.option-list
 {
 	text-align: left;
 	margin-bottom: 15px;
+	.index
+	{
+		width: 20px;
+		display: inline-block;
+	}
 	.title 
 	{
 		width: 120px;
@@ -119,7 +124,7 @@ ul.option-list
 	}
 	.url 
 	{
-		width: 360px;
+		width: 340px;
 		vertical-align: top;
 	}
 }
