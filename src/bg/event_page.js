@@ -42,19 +42,20 @@ chrome.runtime.onInstalled.addListener(function (details) {
 });
 
 function RemoveSomeFeedToTest() {
-  storage.local.get('feeds', function(data) {
+  storageInBG.get('feeds', function(data) {
     // console.log(data);
-    for (var i = 0; i < data.length; i++) {
+    // for (var i = 0; i < data.length; i++) {
+    for (var i = 0; i < 2; i++) {
       data[i].entries.splice(0, 2);
     }
-    storage.local.set('feeds', data);
+    storageInBG.set('feeds', data);
   });
 }
 
 function UpdateFeedsByFeedList () {
-  storage.local.get('feedList', function (data) {
+  storageInBG.get('feedList', function (data) {
     var feedList = data;
-    storage.local.get('feeds', function (data) {
+    storageInBG.get('feeds', function (data) {
       var feeds = data;
       for (var i = feeds.length - 1; i >= 0; i--) {
         var isRemove = true;
@@ -68,7 +69,7 @@ function UpdateFeedsByFeedList () {
           feeds.splice(i, 1);
         }
       }
-      storage.local.set('feeds', feeds);
+      storageInBG.set('feeds', feeds);
     });
   });
 }
@@ -118,7 +119,7 @@ chrome.notifications.onButtonClicked.addListener(function (notificationId, butto
     if (buttonIndex === 1) {
       chrome.tts.stop();
     }
-    GetFeedByUrl(feedUrl, function (feed) {
+    GetNewFeedByUrl(feedUrl, function (feed) {
       // console.log(feed);
       SpeakFeed(feed);
     });
@@ -126,7 +127,7 @@ chrome.notifications.onButtonClicked.addListener(function (notificationId, butto
 });
 
 function UpdateAnnouncerSetting() {
-  storage.local.get('announcerSetting', function(data) {
+  storageInBG.get('announcerSetting', function(data) {
     if (typeof(data) !== 'undefined') {
       localStorage['announcerSetting'] = JSON.stringify(data);
     }
@@ -340,6 +341,7 @@ function CheckFeedsDifferent(oldValue, newValue) {
     }
   }
   if (newFeeds.length > 0) {
+    localStorage['newFeeds'] = JSON.stringify(newFeeds);
     NewRSSNotifications(newFeeds);
   }
 }
@@ -469,22 +471,18 @@ function GetFeed() {
   });
 }
 
-function GetFeedByUrl(feedUrl, callback) {
-  storageInBG.get('feeds', function (data) {
-    var feedSources = [];
-    if (typeof(data) === "object" && typeof(data.length) !== "undefined") {
-      feedSources = data;
-    }
-    // console.log(feedSources);
-    for (var i = 0; i < feedSources.length; i++) {
-      if (feedSources[i].feedUrl === feedUrl) {
+function GetNewFeedByUrl(feedUrl, callback) {
+  var newFeeds = JSON.parse(localStorage['newFeeds']);
+  if (typeof(newFeeds) !== 'undefined') {
+    for (var i = 0; i < newFeeds.length; i++) {
+      if (newFeeds[i].feedUrl === feedUrl) {
         if (typeof(callback) === 'function') {
-          callback(feedSources[i]);
+          callback(newFeeds[i]);
         }
         break;
       }
     }
-  });
+  }
 }
 
 }());
