@@ -21,6 +21,26 @@ localStorage['announcerSetting'] = JSON.stringify({
 //     chrome.runtime.reload();
 // });
 
+function InitAnnouncerSetting() {
+  chrome.tts.getVoices(function (voices) {
+    if (typeof(voices) !== 'undefined') {
+      for (var i = 0; i < voices.length; i++) {
+        if (voices[i].lang === 'zh-CN') {
+          var announcerSetting = {
+            voice: voices[i],
+            rate: 1.0,
+            pitch: 1.0,
+            volume: 1.0
+          };
+          localStorage['announcerSetting'] = JSON.stringify(announcerSetting);
+          storage.semiSync.set('announcerSetting', announcerSetting);
+          break;
+        }
+      }
+    }
+  });
+}
+
 function InitFeedList() {
   var feedList = [
     {
@@ -130,6 +150,9 @@ function UpdateAnnouncerSetting() {
   storageInBG.get('announcerSetting', function(data) {
     if (typeof(data) !== 'undefined') {
       localStorage['announcerSetting'] = JSON.stringify(data);
+    }
+    else {
+      InitAnnouncerSetting();
     }
   });
 }

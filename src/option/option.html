@@ -40,7 +40,7 @@
 							<span class="title">{{messages.optionAnnouncerVoiceTitle}}: </span>
 							<select class="ctrl" ng-model="myVoice" ng-options="voice.voiceName for voice in voices" ng-change="updateAnnouncerSetting()">
 							</select>
-							<span class="value"></span>
+							<span class="value">'{{myVoice.lang}}'</span>
 						</div>
 
 						<div class="ctrl_wrap">
