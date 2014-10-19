@@ -74,6 +74,7 @@ optionModule.controller('FeedManagementCtrl', [
 			$scope.feedList.splice(idx, 1);
 			$scope.updateFeed();
 		}
+		trackEvent('option', 'removeFeed');
 	};
 
 	$scope.addFeed = function (item) {
@@ -89,6 +90,7 @@ optionModule.controller('FeedManagementCtrl', [
 		$scope.feedList.push(item);
 		$scope.feedTemp = new FeedInfo();
 		$scope.updateFeed();
+		trackEvent('option', 'addFeed');
 	};
 
 	$scope.updateFeed = function (item) {
@@ -97,6 +99,7 @@ optionModule.controller('FeedManagementCtrl', [
 			return;
 		}
 		Storage.set('feedList', angular.copy($scope.feedList));
+		trackEvent('option', 'updateFeed');
 	}
 }]);
 
@@ -130,6 +133,7 @@ optionModule.controller('AnnouncerSettingCtrl', [
 			volume: parseFloat($scope.myVolume, 10)
 		};
 		chrome.tts.speak(text, options);
+		trackEvent('option', 'testSpeech');
 	};
 
 	$scope.setDefaults = function () {
@@ -138,6 +142,7 @@ optionModule.controller('AnnouncerSettingCtrl', [
 		$scope.myPitch = 1.0;
 		$scope.myVolume = 1.0;
 		$scope.updateAnnouncerSetting();
+		trackEvent('option', 'setDefaults');
 	};
 
 	$scope.updateAnnouncerSetting = function () {
@@ -156,6 +161,7 @@ optionModule.controller('AnnouncerSettingCtrl', [
 		};
 		// console.log(announcerSetting);
 		Storage.set('announcerSetting', announcerSetting);
+		trackEvent('option', 'updateAnnouncerSetting');
 	};
 
 	Storage.get('announcerSetting', function (data) {
@@ -195,3 +201,9 @@ _gaq.push(['_trackPageview']);
   ga.src = 'https://ssl.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
+
+function trackEvent(targetName, eventName) {
+  _gaq.push(['_trackEvent', targetName, eventName]);
+};
+
+

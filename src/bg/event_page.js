@@ -59,6 +59,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
   InitFeedList();
   UpdateAnnouncerSetting();
   // RemoveSomeFeedToTest();
+  trackEvent('event_page', 'installed')
 });
 
 function RemoveSomeFeedToTest() {
@@ -123,15 +124,18 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
 chrome.notifications.onClosed.addListener(function (notificationId, byUser) {
   // console.log('notificationId: ' + notificationId);
   // console.log('byUser: ' + byUser);
+  trackEvent('notificationClose', 'clicked');
 });
 
 chrome.notifications.onClicked.addListener(function (notificationId) {
   // console.log('notificationId: ' + notificationId);
+  trackEvent('notificationClicked', 'clicked');
 });
 
 chrome.notifications.onButtonClicked.addListener(function (notificationId, buttonIndex) {
   // console.log('notificationId: ' + notificationId);
   // console.log('buttonIndex: ' + buttonIndex);
+  trackEvent('notificationButtonClicked', 'clicked');
 
   if (notificationId.indexOf('newFeedsNotification_') !== -1) {
     var feedUrl = notificationId.substr(('newFeedsNotification_').length);
@@ -519,3 +523,9 @@ _gaq.push(['_trackPageview']);
   ga.src = 'https://ssl.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
+
+function trackEvent(targetName, eventName) {
+  _gaq.push(['_trackEvent', targetName, eventName]);
+};
+
+

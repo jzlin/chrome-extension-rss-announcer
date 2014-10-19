@@ -25,11 +25,13 @@ feedModule.controller('FeedCtrl', [
   $scope.playEntry = function (entry, playNow) {
     if (playNow) {
       chrome.tts.stop();
+      trackEvent('popup', 'playNow');
     }
     chrome.runtime.getBackgroundPage(function(window) {
       // console.log(window);
       window.SpeakEntry(entry);
     });
+    trackEvent('popup', 'playEntry');
   };
 
   $rootScope.messages = {
@@ -68,10 +70,12 @@ feedModule.controller('ToolCtrl', [
         chrome.tts.pause();
       }
     });
+    trackEvent('popup', 'controlPlayer_' + action);
   };
 
   $scope.gotoOptionPage = function () {
     window.open(chrome.extension.getURL('src/option/option.html'), '_blank');
+    trackEvent('popup', 'gotoOptionPage');
   };
 }]);
 
@@ -86,5 +90,9 @@ _gaq.push(['_trackPageview']);
   ga.src = 'https://ssl.google-analytics.com/ga.js';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
+
+function trackEvent(targetName, eventName) {
+  _gaq.push(['_trackEvent', targetName, eventName]);
+};
 
 
