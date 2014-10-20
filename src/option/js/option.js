@@ -45,7 +45,7 @@ function FeedInfo(title, url) {
 	return {
 		title: title,
 		url: url
-	}
+	};
 }
 
 optionModule.controller('FeedManagementCtrl', [
@@ -100,7 +100,7 @@ optionModule.controller('FeedManagementCtrl', [
 		}
 		Storage.set('feedList', angular.copy($scope.feedList));
 		trackEvent('option', 'updateFeed');
-	}
+	};
 }]);
 
 optionModule.controller('AnnouncerSettingCtrl', [
@@ -204,6 +204,6 @@ _gaq.push(['_trackPageview']);
 
 function trackEvent(targetName, eventName) {
   _gaq.push(['_trackEvent', targetName, eventName]);
-};
+}
 
 

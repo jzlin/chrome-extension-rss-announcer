@@ -34,7 +34,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
   InitFeedList();
   UpdateAnnouncerSetting();
   // RemoveSomeFeedToTest();
-  trackEvent('event_page', 'installed')
+  trackEvent('event_page', 'installed');
 });
 
 function InitFeedList() {
@@ -54,7 +54,7 @@ function InitFeedList() {
 function UpdateAnnouncerSetting() {
   storageInBG.get('announcerSetting', function(data) {
     if (typeof(data) !== 'undefined') {
-      localStorage['announcerSetting'] = JSON.stringify(data);
+      localStorage.announcerSetting = JSON.stringify(data);
     }
     else {
       InitAnnouncerSetting();
@@ -82,7 +82,7 @@ function InitAnnouncerSetting() {
         defaultsAnnouncerSetting.voice = voices[0];
       }
     }
-    localStorage['announcerSetting'] = JSON.stringify(defaultsAnnouncerSetting);
+    localStorage.announcerSetting = JSON.stringify(defaultsAnnouncerSetting);
     storage.semiSync.set('announcerSetting', defaultsAnnouncerSetting);
   });
 }
@@ -99,7 +99,7 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
 
     if (key === 'announcerSetting' && 
       typeof(storageChange.newValue) !== 'undefined') {
-      localStorage['announcerSetting'] = JSON.stringify(storageChange.newValue);
+      localStorage.announcerSetting = JSON.stringify(storageChange.newValue);
     }
     else if (key === 'feedList') {
       UpdateFeedsByFeedList();
@@ -143,7 +143,7 @@ function CheckFeedsDifferent(oldValue, newValue) {
   }
   for (var i = 0; i < newValue.length; i++) {
     var newFeed = newValue[i];
-    var oldFeed = undefined;
+    var oldFeed;
     var isFeedExist = false;
     if (typeof(oldValue) !== 'undefined') {
       for (var j = 0; j < oldValue.length; j++) {
@@ -186,7 +186,7 @@ function CheckFeedsDifferent(oldValue, newValue) {
     }
   }
   if (newFeeds.length > 0) {
-    localStorage['newFeeds'] = JSON.stringify(newFeeds);
+    localStorage.newFeeds = JSON.stringify(newFeeds);
     NewRSSNotifications(newFeeds);
   }
   else {
@@ -278,8 +278,8 @@ chrome.notifications.onButtonClicked.addListener(function (notificationId, butto
 
 function GetNewFeedByUrl(feedUrl, callback) {
   var newFeeds = [];
-  if (typeof(localStorage['newFeeds']) !== 'undefined') {
-    newFeeds = JSON.parse(localStorage['newFeeds']);
+  if (typeof(localStorage.newFeeds) !== 'undefined') {
+    newFeeds = JSON.parse(localStorage.newFeeds);
   }
   if (typeof(newFeeds) !== 'undefined') {
     for (var i = 0; i < newFeeds.length; i++) {
@@ -349,7 +349,7 @@ function GetSentences(content) {
   var spliters = content.match(/[\⋯\·\．\，\。\！\？\：\；\,\;\n\.\!\?\:]/g);
   var sentences = [];
   while (content.length > 0) {
-    var sentence = undefined;
+    var sentence;
     var spliter = (spliters != null && spliters.length > 0) ? 
       spliters[0] : undefined;
     var doAppend = true;
@@ -390,7 +390,7 @@ function GetSentences(content) {
       }
       else {
         while (sentence.length > 0) {
-          var subSentence = undefined;
+          var subSentence;
           if (sentence.length > maxLen) {
             subSentence = sentence.slice(0, maxLen);
             sentence = sentence.substr(maxLen);
@@ -433,12 +433,12 @@ function SpeakText(text, toLog) {
     return;
   }
 
-  var announcerSetting = undefined;
-  if (typeof(localStorage['announcerSetting']) !== 'undefined') {
-    announcerSetting = JSON.parse(localStorage['announcerSetting']);
+  var announcerSetting;
+  if (typeof(localStorage.announcerSetting) !== 'undefined') {
+    announcerSetting = JSON.parse(localStorage.announcerSetting);
   }
   if (toLog) {
-    console.log('will speak: ' + text)
+    console.log('will speak: ' + text);
   }
   if (typeof(announcerSetting) === 'undefined' || 
     typeof(announcerSetting.voice) === 'undefined') {
@@ -571,6 +571,6 @@ _gaq.push(['_trackPageview']);
 
 function trackEvent(targetName, eventName) {
   _gaq.push(['_trackEvent', targetName, eventName]);
-};
+}
 
 

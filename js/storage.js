@@ -150,7 +150,7 @@ function StorageSemiSync() {
 	function get(key, callback) {
 		_local.get(key, function(obj)
 		{
-			var delegateCallback = undefined;
+			var delegateCallback;
 			// 如果 local 有資料，就先回傳。
 			if (typeof(obj) === 'object')
 			{

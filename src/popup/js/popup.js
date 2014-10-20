@@ -35,7 +35,8 @@ feedModule.controller('FeedCtrl', [
   };
 
   $rootScope.messages = {
-    extActionTitle: chrome.i18n.getMessage('extActionTitle')
+    extActionTitle: chrome.i18n.getMessage('extActionTitle'),
+    emptyFeedListMsg: chrome.i18n.getMessage('emptyFeedListMsg')
   };
 }]);
 
@@ -93,6 +94,6 @@ _gaq.push(['_trackPageview']);
 
 function trackEvent(targetName, eventName) {
   _gaq.push(['_trackEvent', targetName, eventName]);
-};
+}
 
 
