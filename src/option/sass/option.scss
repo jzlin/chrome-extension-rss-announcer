@@ -124,7 +124,7 @@ ul.option-list
 	}
 	.url 
 	{
-		width: 340px;
+		width: 330px;
 		vertical-align: top;
 	}
 }
@@ -134,7 +134,7 @@ ul.option-list
 	margin: 18px 8px;
 	.title
 	{
-		width: 60px;
+		width: 70px;
 		text-align: left;
 		display: inline-block;
 	}
@@ -144,7 +144,9 @@ ul.option-list
 	}
 	.value
 	{
-		width: 50px;
+		width: 70px;
+		text-align: left;
+		padding-left: 10px;
 		display: inline-block;
 	}
 }
