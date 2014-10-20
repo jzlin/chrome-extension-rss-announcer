@@ -38,6 +38,10 @@
 					</div>
 				</div>
 			</div>
+
+			<div ng-show="feeds.length === 0">
+				<span ng-bind="messages.emptyFeedListMsg"></span>
+			</div>
 		</div>
 	</div>
 	<script type="text/javascript" src="../../js/storage.js"></script>

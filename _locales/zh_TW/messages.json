@@ -152,5 +152,10 @@
         "example": "example title"
       }
     }
+  },
+  "emptyFeedListMsg": 
+  {
+    "message":"您尚未加入 RSS 來源！ 請點選設定按鈕前往選項頁面。",
+    "description":"沒有任何 feed 的訊息"
   }
 }

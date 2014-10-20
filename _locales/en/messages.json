@@ -152,5 +152,10 @@
         "example": "example title"
       }
     }
+  },
+  "emptyFeedListMsg": 
+  {
+    "message":"You don't have any feed! please click setting button to option page.",
+    "description":"no any feed message"
   }
 }
