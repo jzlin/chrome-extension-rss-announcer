@@ -149,19 +149,27 @@ function StorageSemiSync() {
 			return JSON.parse(localStorage[delayFunctionKeySet]);
 		}
 		else {
-			_sync.get(key, function(obj)
+			_sync.get(key, function (obj)
 			{
 				if (typeof(obj) === 'object')
 				{
 					// console.log('%c' + key + ' has updating to local from sync!', 'color:red');
 					// console.log(obj);
 					// 更新 local
-					_local.set(key, obj, function() {
+					_local.set(key, obj, function () {
 						// console.log('%c' + key + ' had updated to local from sync!', 'color:red; font-weight: bold');
 					});
+					if (typeof(callback) === 'function') {
+						callback(obj);
+					}
 				}
-				if (typeof(callback) === 'function') {
-					callback(obj);
+				else 
+				{
+					_local.get(key, function (obj) {
+						if (typeof(callback) === 'function') {
+							callback(obj);
+						}
+					});
 				}
 			});
 		}
