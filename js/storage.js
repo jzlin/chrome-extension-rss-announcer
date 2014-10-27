@@ -145,8 +145,11 @@ function StorageSemiSync() {
 	function get(key, callback) {
 		var delayFunctionKeySet = SET_PREFIX + key;
 
-		if (typeof(localStorage.delayFunctionKeySet) !== 'undefined') {
-			return JSON.parse(localStorage[delayFunctionKeySet]);
+		if (typeof(localStorage[delayFunctionKeySet]) !== 'undefined') {
+			var obj = JSON.parse(localStorage[delayFunctionKeySet]);
+			if (typeof(callback) === 'function') {
+				callback(obj);
+			}
 		}
 		else {
 			_sync.get(key, function (obj)
