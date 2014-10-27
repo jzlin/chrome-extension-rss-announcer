@@ -496,7 +496,7 @@ storageInBG.get('notificationSetting', function (data) {
   var interval = UPDATE_INTERVAL;
   if (typeof(data) !== 'undefined' && 
     typeof(data.noticeInterval) !== 'undefined') {
-    interval = data.noticeInterval
+    interval = data.noticeInterval;
   }
   chrome.alarms.create('GetFeed', {
     when: new Date('2014-10-01').getTime(),
