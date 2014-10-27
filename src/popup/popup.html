@@ -22,14 +22,14 @@
 		<div id="feedContainer">
 			<div class="feed" ng-repeat="feed in feeds | orderBy:'title'">
 				<h3>
-					<a href="{{feed.link}}" target="_blank">{{feed.title}}</a>
+					<a href="{{feed.link}}" target="_blank">{{feed.customTitle}}</a>
 				</h3>
 				<div class="feed-item-list">
 					<div class="feed-item" ng-repeat="item in feed.entries">
 						<a class="titile" href="{{item.link}}" target="_blank">{{item.title}}</a>
 						<span class="author" ng-show="{{item.author.length > 0}}"> - {{item.author}}</span>
 						<br />
-						<span class="time">{{item.publishedDate | date:'yyyy-MM-dd HH:mm'}}</span>
+						<span class="time">{{item.publishedDateStr | date:'yyyy-MM-dd HH:mm'}}</span>
 						<br />
 						<div class="control-bar">
 							<i class="add" ng-click="playEntry(item)"></i>

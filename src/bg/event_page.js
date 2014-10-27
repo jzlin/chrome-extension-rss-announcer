@@ -123,6 +123,7 @@ function UpdateFeedsByFeedList () {
           for (var i = 0; i < feeds.length; i++) {
             for (var j = 0; j < feedList.length; j++) {
               if (feedList[j].url === feeds[i].feedUrl) {
+                feeds[i].customTitle = feedList[j].title;
                 newFeeds.push(feeds[i]);
               }
             }
@@ -178,6 +179,7 @@ function CheckFeedsDifferent(oldValue, newValue) {
           feedUrl: newFeed.feedUrl,
           link: newFeed.link,
           title: newFeed.title,
+          customTitle: newFeed.customTitle,
           type: newFeed.type
         });
       }
@@ -210,7 +212,7 @@ function NewRSSNotifications(newFeeds) {
     var options = {
       type: 'list', //"basic", "image", "list", or "progress"
       iconUrl: notificationIconUrl,
-      title: chrome.i18n.getMessage('newFeedsNotificationTitle', newFeed.title),
+      title: chrome.i18n.getMessage('newFeedsNotificationTitle', newFeed.customTitle),
       message: '',
       contextMessage: chrome.i18n.getMessage('newFeedsNotificationMsg', newFeed.entries.length.toString()),
       priority: 0,
@@ -505,23 +507,26 @@ function GetFeed() {
       feedSources = data;
     }
     for (var i = 0; i < feedSources.length; i++) {
-      FeedLoader({q: feedSources[i].url, num: 10}, function (data) {
-        if (typeof(data) !== 'object' ||
-          typeof(data.error) === 'object') {
-          console.error(data.error.message);
-        }
-        else {
-          var feed = data.feed;
-          for (var j = 0; j < feed.entries.length; j++) {
-            var publishedDate = new Date(feed.entries[j].publishedDate);
-            feed.entries[j].publishedDate = publishedDate.getTime();
+      (function (feedInfo) {
+        FeedLoader({q: feedInfo.url, num: 10}, function (data) {
+          if (typeof(data) !== 'object' ||
+            typeof(data.error) === 'object') {
+            console.error(data.error.message);
           }
-          AddFeed(feed);
-          if (feeds.length === feedSources.length) {
-            storageInBG.set('feeds', feeds);
+          else {
+            var feed = data.feed;
+            for (var j = 0; j < feed.entries.length; j++) {
+              var publishedDate = new Date(feed.entries[j].publishedDate);
+              feed.entries[j].publishedDateStr = publishedDate.getTime();
+            }
+            feed.customTitle = feedInfo.title;
+            AddFeed(feed);
+            if (feeds.length === feedSources.length) {
+              storageInBG.set('feeds', feeds);
+            }
           }
-        }
-      });
+        });
+      }(feedSources[i]));
     }
   });
 }
