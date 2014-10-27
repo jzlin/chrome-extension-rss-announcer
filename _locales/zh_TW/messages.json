@@ -24,6 +24,26 @@
     "message":"Feed 管理",
     "description":"feed 管理選項標題"
   },
+  "optionNotificationSettingTitle": 
+  {
+    "message":"通知設定",
+    "description":"通知設定標題"
+  },
+  "optionEnableNotificationTitle": 
+  {
+    "message":"啟用通知",
+    "description":"啟用通知標題"
+  },
+  "optionNoticeIntervalTitle": 
+  {
+    "message":"通知週期",
+    "description":"通知週期標題"
+  },
+  "optionNoticeIntervalUnitTitle": 
+  {
+    "message":"分鐘",
+    "description":"通知週期單位"
+  },
   "optionAnnouncerSettingTitle": 
   {
     "message":"播音員設定",

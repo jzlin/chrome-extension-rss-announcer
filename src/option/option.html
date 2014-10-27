@@ -33,38 +33,53 @@
 					</div>
 				</div>
 			</li>
+			<li class="option" ng-controller="NotificationSettingCtrl">
+				<div class="option-title">{{messages.optionNotificationSettingTitle}}</div>
+				<div class="option-content">
+					<div class="ctrl_wrap">
+						<input type="checkbox" ng-model="enableNotification" ng-change="updateNotificationSetting()">
+						<span>{{messages.optionEnableNotificationTitle}}</span>
+					</div>
+
+					<div class="ctrl_wrap">
+						<span class="title">{{messages.optionNoticeIntervalTitle}}: </span>
+						<input type="range" class="ctrl" min="5" max="60" step="5" ng-model="noticeInterval" ng-change="updateNotificationSetting()">
+						<span class="value">{{noticeInterval}} {{messages.optionNoticeIntervalUnitTitle}}</span>
+					</div>
+				</div>
+			</li>
 			<li class="option" ng-controller="AnnouncerSettingCtrl">
 				<div class="option-title">{{messages.optionAnnouncerSettingTitle}}</div>
 				<div class="option-content">
-						<div class="ctrl_wrap">
-							<span class="title">{{messages.optionAnnouncerVoiceTitle}}: </span>
-							<select class="ctrl" ng-model="myVoice" ng-options="voice.voiceName for voice in voices" ng-change="updateAnnouncerSetting()">
-							</select>
-							<span class="value">'{{myVoice.lang}}'</span>
-						</div>
+					<div class="ctrl_wrap">
+						<span class="title">{{messages.optionAnnouncerVoiceTitle}}: </span>
+						<select class="ctrl" ng-model="myVoice" ng-options="voice.voiceName for voice in voices" ng-change="updateAnnouncerSetting()">
+						</select>
+						<span class="value">'{{myVoice.lang}}'</span>
+					</div>
 
-						<div class="ctrl_wrap">
-							<span class="title">{{messages.optionAnnouncerRateTitle}}: </span>
-							<input type="range" class="ctrl" min="0.5" max="2.0" step="0.1" ng-model="myRate" ng-change="updateAnnouncerSetting()">
-							<span class="value">{{myRate}}</span>
-						</div>
+					<div class="ctrl_wrap">
+						<span class="title">{{messages.optionAnnouncerRateTitle}}: </span>
+						<input type="range" class="ctrl" min="0.5" max="2.0" step="0.1" ng-model="myRate" ng-change="updateAnnouncerSetting()">
+						<span class="value">{{myRate}}</span>
+					</div>
 
-						<div class="ctrl_wrap">
-							<span class="title">{{messages.optionAnnouncerPitchTitle}}: </span>
-							<input type="range" class="ctrl" min="0.5" max="1.5" step="0.1" ng-model="myPitch" ng-change="updateAnnouncerSetting()">
-							<span class="value">{{myPitch}}</span>
-						</div>
+					<div class="ctrl_wrap">
+						<span class="title">{{messages.optionAnnouncerPitchTitle}}: </span>
+						<input type="range" class="ctrl" min="0.5" max="1.5" step="0.1" ng-model="myPitch" ng-change="updateAnnouncerSetting()">
+						<span class="value">{{myPitch}}</span>
+					</div>
 
-						<div class="ctrl_wrap">
-							<span class="title">{{messages.optionAnnouncerVolumeTitle}}: </span>
-							<input type="range" class="ctrl" min="0.0" max="1.0" step="0.1" ng-model="myVolume" ng-change="updateAnnouncerSetting()">
-							<span class="value">{{myVolume}}</span>
-						</div>
+					<div class="ctrl_wrap">
+						<span class="title">{{messages.optionAnnouncerVolumeTitle}}: </span>
+						<input type="range" class="ctrl" min="0.0" max="1.0" step="0.1" ng-model="myVolume" ng-change="updateAnnouncerSetting()">
+						<span class="value">{{myVolume}}</span>
+					</div>
 
-						<div class="ctrl_wrap">
-							<button ng-click="testSpeech()">{{messages.optionAnnouncerTestSpeechTitle}}</button>
-							<button ng-click="setDefaults()">{{messages.optionAnnouncerDefaultsTitle}}</button>
-						</div>
+					<div class="ctrl_wrap">
+						<button ng-click="testSpeech()">{{messages.optionAnnouncerTestSpeechTitle}}</button>
+						<button ng-click="setDefaults()">{{messages.optionAnnouncerDefaultsTitle}}</button>
+					</div>
 
 				</div>
 			</li>

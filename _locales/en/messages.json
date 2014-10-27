@@ -24,6 +24,26 @@
     "message":"Feed Management",
     "description":"feed management title"
   },
+  "optionNotificationSettingTitle": 
+  {
+    "message":"Notification Setting",
+    "description":"notification setting title"
+  },
+  "optionEnableNotificationTitle": 
+  {
+    "message":"Enable Notification",
+    "description":"enable notification title"
+  },
+  "optionNoticeIntervalTitle": 
+  {
+    "message":"Notice Interval",
+    "description":"notice interval title"
+  },
+  "optionNoticeIntervalUnitTitle": 
+  {
+    "message":"minutes",
+    "description":"notice interval unit"
+  },
   "optionAnnouncerSettingTitle": 
   {
     "message":"Announcer Setting",

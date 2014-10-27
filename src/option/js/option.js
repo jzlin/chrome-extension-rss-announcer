@@ -31,6 +31,12 @@ optionModule.controller('MainCtrl', [
 		optionFeedManagementTitle: chrome.i18n.getMessage('optionFeedManagementTitle'),
 		operationRemoveStr: chrome.i18n.getMessage('operationRemoveStr'),
 		operationAddStr: chrome.i18n.getMessage('operationAddStr'),
+		
+		optionNotificationSettingTitle: chrome.i18n.getMessage('optionNotificationSettingTitle'),
+		optionEnableNotificationTitle: chrome.i18n.getMessage('optionEnableNotificationTitle'),
+		optionNoticeIntervalTitle: chrome.i18n.getMessage('optionNoticeIntervalTitle'),
+		optionNoticeIntervalUnitTitle: chrome.i18n.getMessage('optionNoticeIntervalUnitTitle'),
+
 		optionAnnouncerSettingTitle: chrome.i18n.getMessage('optionAnnouncerSettingTitle'),
 		optionAnnouncerVoiceTitle: chrome.i18n.getMessage('optionAnnouncerVoiceTitle'),
 		optionAnnouncerRateTitle: chrome.i18n.getMessage('optionAnnouncerRateTitle'),
@@ -101,6 +107,43 @@ optionModule.controller('FeedManagementCtrl', [
 		Storage.set('feedList', angular.copy($scope.feedList));
 		trackEvent('option', 'updateFeed');
 	};
+}]);
+
+optionModule.controller('NotificationSettingCtrl', [
+	'$scope',
+	'Storage',
+	function ($scope, Storage) {
+	$scope.enableNotification = false;
+	$scope.noticeInterval = 15;
+
+	$scope.updateNotificationSetting = function () {
+		// console.log("enter updateNotificationSetting");
+		if (typeof($scope.enableNotification) !== 'boolean' ||
+			$scope.noticeInterval < 5 || $scope.noticeInterval > 60) {
+			return;
+		}
+		var notificationSetting = {
+			enableNotification: $scope.enableNotification || false,
+			noticeInterval: parseInt($scope.noticeInterval, 10) || 15
+		};
+		// console.log(notificationSetting);
+		Storage.set('notificationSetting', notificationSetting);
+		trackEvent('option', 'updateNotificationSetting');
+	};
+
+	Storage.get('notificationSetting', function (data) {
+		if (typeof(data) === "object") {
+			$scope.$apply(function () {
+				if (typeof(data.enableNotification) === 'boolean') {
+					$scope.enableNotification = data.enableNotification;
+				}
+				if (typeof(data.noticeInterval) !== 'undefined') {
+					$scope.noticeInterval = data.noticeInterval;
+				}
+			});
+		}
+	});
+
 }]);
 
 optionModule.controller('AnnouncerSettingCtrl', [

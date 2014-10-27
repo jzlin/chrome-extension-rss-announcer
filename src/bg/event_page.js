@@ -190,7 +190,12 @@ function CheckFeedsDifferent(oldValue, newValue) {
   }
   if (newFeeds.length > 0) {
     localStorage.newFeeds = JSON.stringify(newFeeds);
-    NewRSSNotifications(newFeeds);
+    storage.semiSync.get('notificationSetting', function (data) {
+      if (typeof(data) !== 'undefined' && 
+        data.enableNotification === true) {
+        NewRSSNotifications(newFeeds);
+      }
+    });
   }
   else {
     localStorage.removeItem('newFeeds');
@@ -487,9 +492,16 @@ var storageInBG = storage.local;
 
 var feeds = [];
 
-chrome.alarms.create('GetFeed', {
-  when: new Date('2014-10-01').getTime(),
-  periodInMinutes: UPDATE_INTERVAL
+storageInBG.get('notificationSetting', function (data) {
+  var interval = UPDATE_INTERVAL;
+  if (typeof(data) !== 'undefined' && 
+    typeof(data.noticeInterval) !== 'undefined') {
+    interval = data.noticeInterval
+  }
+  chrome.alarms.create('GetFeed', {
+    when: new Date('2014-10-01').getTime(),
+    periodInMinutes: interval
+  });
 });
 
 chrome.alarms.onAlarm.addListener(function (alarm) {

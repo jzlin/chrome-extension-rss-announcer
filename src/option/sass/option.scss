@@ -134,8 +134,9 @@ ul.option-list
 	margin: 18px 8px;
 	.title
 	{
-		width: 70px;
-		text-align: left;
+		width: 100px;
+		text-align: right;
+		padding-right: 10px;
 		display: inline-block;
 	}
 	.ctrl 
@@ -144,7 +145,7 @@ ul.option-list
 	}
 	.value
 	{
-		width: 70px;
+		width: 100px;
 		text-align: left;
 		padding-left: 10px;
 		display: inline-block;
