@@ -27,13 +27,14 @@ function RemoveSomeFeedToTest() {
 
 /**** END DEV USE*****/
 
-var maxLen = 70;
+var UPDATE_INTERVAL = 60;
+var MAX_LEN = 70;
 var NEW_FEED_ID_PREFIX = 'newFeedsNotification_';
 
 chrome.runtime.onInstalled.addListener(function (details) {
   InitFeedList();
   UpdateAnnouncerSetting();
-  // RemoveSomeFeedToTest();
+  // RemoveSomeFeedToTest(); // Test use
   trackEvent('event_page', 'installed');
 });
 
@@ -377,10 +378,10 @@ function GetSentences(content) {
       content = '';
     }
     if (typeof(sentence) !== 'undefined') {
-      if (sentence.length <= maxLen) {
+      if (sentence.length <= MAX_LEN) {
         doAppend = doAppend && 
           sentences.length > 0 &&
-          (sentences[sentences.length - 1].length + sentence.length) <= maxLen;
+          (sentences[sentences.length - 1].length + sentence.length) <= MAX_LEN;
         if (doAppend) {
           sentences[sentences.length - 1] += sentence;
         }
@@ -391,9 +392,9 @@ function GetSentences(content) {
       else {
         while (sentence.length > 0) {
           var subSentence;
-          if (sentence.length > maxLen) {
-            subSentence = sentence.slice(0, maxLen);
-            sentence = sentence.substr(maxLen);
+          if (sentence.length > MAX_LEN) {
+            subSentence = sentence.slice(0, MAX_LEN);
+            sentence = sentence.substr(MAX_LEN);
           }
           else {
             subSentence = sentence;
@@ -427,9 +428,9 @@ function SpeakText(text, toLog) {
     text.trim().length === 0) {
     return;
   }
-  if (text.length > maxLen) {
-    SpeakText(text.slice(0, maxLen));
-    SpeakText(text.substr(maxLen));
+  if (text.length > MAX_LEN) {
+    SpeakText(text.slice(0, MAX_LEN));
+    SpeakText(text.substr(MAX_LEN));
     return;
   }
 
@@ -486,7 +487,7 @@ var feeds = [];
 
 chrome.alarms.create('GetFeed', {
   when: new Date('2014-10-01').getTime(),
-  periodInMinutes: 15
+  periodInMinutes: UPDATE_INTERVAL
 });
 
 chrome.alarms.onAlarm.addListener(function (alarm) {

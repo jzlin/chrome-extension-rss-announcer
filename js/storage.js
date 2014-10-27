@@ -94,7 +94,6 @@ function StorageSemiSync() {
 	/** --------------- Constants -------------- */
 	var DEFAULT_DELAY_TIME = 1;//10 * 1000;
 	var CLEAR_PREFIX = 'clear_';
-	var GET_PREFIX = 'get_';
 	var SET_PREFIX = 'set_';
 
 	/** ---------------- Fields ---------------- */
@@ -110,10 +109,6 @@ function StorageSemiSync() {
 			// console.log('%c' + key + ' had clear in sync!', 'color:red; font-weight: bold');
 			_sync.clear(key);
 			delayFunction[alarm.name] = undefined;
-	  }
-	  else if (alarm.name.indexOf(GET_PREFIX) !== -1) {
-	  	var key = alarm.name.substr(GET_PREFIX.length);
-			delayFunctionTemp(key, delayCallback[alarm.name]);
 	  }
 	  else if (alarm.name.indexOf(SET_PREFIX) !== -1) {
 	  	var key = alarm.name.substr(SET_PREFIX.length);
@@ -148,72 +143,28 @@ function StorageSemiSync() {
 		delayFunction[delayFunctionKeyClear] = true;
 	}
 	function get(key, callback) {
-		_local.get(key, function(obj)
-		{
-			var delegateCallback;
-			// 如果 local 有資料，就先回傳。
-			if (typeof(obj) === 'object')
+		var delayFunctionKeySet = SET_PREFIX + key;
+
+		if (typeof(localStorage.delayFunctionKeySet) !== 'undefined') {
+			return JSON.parse(localStorage[delayFunctionKeySet]);
+		}
+		else {
+			_sync.get(key, function(obj)
 			{
+				if (typeof(obj) === 'object')
+				{
+					// console.log('%c' + key + ' has updating to local from sync!', 'color:red');
+					// console.log(obj);
+					// 更新 local
+					_local.set(key, obj, function() {
+						// console.log('%c' + key + ' had updated to local from sync!', 'color:red; font-weight: bold');
+					});
+				}
 				if (typeof(callback) === 'function') {
 					callback(obj);
 				}
-			}
-			else {
-				delegateCallback = callback;
-			}
-
-			// 抓取 sync 設定，更新 local 資料。
-			var delayFunctionKeyGet = GET_PREFIX + key;
-
-			delayCallback[delayFunctionKeyGet] = delegateCallback;
-
-			if (delayFunction[delayFunctionKeyGet])
-			{
-				chrome.alarms.clear(delayFunctionKeyGet);
-			}
-
-			chrome.alarms.create(delayFunctionKeyGet, {
-			  delayInMinutes: DEFAULT_DELAY_TIME
 			});
-
-			delayFunction[delayFunctionKeyGet] = true;
-		});
-	}
-	function delayFunctionTemp(key, callback)
-	{
-		var delayFunctionKeyGet = GET_PREFIX + key;
-		var delayFunctionKeySet = SET_PREFIX + key;
-		// 檢查是否正在執行寫入動作，如果是，延後執行。
-		if (delayFunction[delayFunctionKeySet])
-		{
-			if (delayFunction[delayFunctionKeyGet]) {
-				chrome.alarms.clear(delayFunctionKeyGet);
-			}
-
-			chrome.alarms.create(delayFunctionKeyGet, {
-			  delayInMinutes: DEFAULT_DELAY_TIME
-			});
-
-			delayFunction[delayFunctionKeyGet] = true;
-
-			return ;
 		}
-
-		_sync.get(key, function(obj)
-		{
-			if (typeof(obj) === 'object')
-			{
-				// console.log('%c' + key + ' has updating to local from sync!', 'color:red');
-				// console.log(obj);
-				// 更新 local
-				_local.set(key, obj, function() {
-					// console.log('%c' + key + ' had updated to local from sync!', 'color:red; font-weight: bold');
-				});
-			}
-			if (typeof(callback) === 'function') {
-				callback(obj);
-			}
-		});
 	}
 	function set(key, value, callback) {
 		// STEP 1 : 儲存至 local
