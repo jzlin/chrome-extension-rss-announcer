@@ -80,7 +80,7 @@ optionModule.controller('FeedManagementCtrl', [
 			$scope.feedList.splice(idx, 1);
 			$scope.updateFeed();
 		}
-		trackEvent('option', 'removeFeed');
+		trackEvent('option', 'removeFeed', JSON.stringify(item), 1);
 	};
 
 	$scope.addFeed = function (item) {
@@ -96,7 +96,7 @@ optionModule.controller('FeedManagementCtrl', [
 		$scope.feedList.push(item);
 		$scope.feedTemp = new FeedInfo();
 		$scope.updateFeed();
-		trackEvent('option', 'addFeed');
+		trackEvent('option', 'addFeed', JSON.stringify(item), 1);
 	};
 
 	$scope.updateFeed = function (item) {
@@ -105,7 +105,7 @@ optionModule.controller('FeedManagementCtrl', [
 			return;
 		}
 		Storage.set('feedList', angular.copy($scope.feedList));
-		trackEvent('option', 'updateFeed');
+		trackEvent('option', 'updateFeed', JSON.stringify(item), 1);
 	};
 }]);
 
@@ -128,7 +128,7 @@ optionModule.controller('NotificationSettingCtrl', [
 		};
 		// console.log(notificationSetting);
 		Storage.set('notificationSetting', notificationSetting);
-		trackEvent('option', 'updateNotificationSetting');
+		trackEvent('option', 'updateNotificationSetting', JSON.stringify(notificationSetting), 1);
 	};
 
 	Storage.get('notificationSetting', function (data) {
@@ -176,7 +176,7 @@ optionModule.controller('AnnouncerSettingCtrl', [
 			volume: parseFloat($scope.myVolume, 10)
 		};
 		chrome.tts.speak(text, options);
-		trackEvent('option', 'testSpeech');
+		trackEvent('option', 'testSpeech', JSON.stringify(options), 1);
 	};
 
 	$scope.setDefaults = function () {
@@ -185,7 +185,7 @@ optionModule.controller('AnnouncerSettingCtrl', [
 		$scope.myPitch = 1.0;
 		$scope.myVolume = 1.0;
 		$scope.updateAnnouncerSetting();
-		trackEvent('option', 'setDefaults');
+		trackEvent('option', 'setDefaults', chrome.i18n.getUILanguage(), 1);
 	};
 
 	$scope.updateAnnouncerSetting = function () {
@@ -204,7 +204,7 @@ optionModule.controller('AnnouncerSettingCtrl', [
 		};
 		// console.log(announcerSetting);
 		Storage.set('announcerSetting', announcerSetting);
-		trackEvent('option', 'updateAnnouncerSetting');
+		trackEvent('option', 'updateAnnouncerSetting', JSON.stringify(announcerSetting), 1);
 	};
 
 	Storage.get('announcerSetting', function (data) {
@@ -245,8 +245,8 @@ _gaq.push(['_trackPageview']);
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
 
-function trackEvent(targetName, eventName) {
-  _gaq.push(['_trackEvent', targetName, eventName]);
+function trackEvent(category, action, opt_label, opt_value, opt_noninteraction) {
+  _gaq.push(['_trackEvent', category, action, opt_label, opt_value, opt_noninteraction]);
 }
 
 

@@ -35,7 +35,7 @@ chrome.runtime.onInstalled.addListener(function (details) {
   InitFeedList();
   UpdateAnnouncerSetting();
   // RemoveSomeFeedToTest(); // Test use
-  trackEvent('event_page', 'installed');
+  trackEvent('event_page', 'installed', new Date().toString(), 10);
 });
 
 function InitFeedList() {
@@ -258,18 +258,18 @@ function NewRSSNotifications(newFeeds) {
 chrome.notifications.onClosed.addListener(function (notificationId, byUser) {
   // console.log('notificationId: ' + notificationId);
   // console.log('byUser: ' + byUser);
-  trackEvent('notificationClose', 'clicked');
+  trackEvent('event_page', 'notificationClose', new Date().toString(), 0);
 });
 
 chrome.notifications.onClicked.addListener(function (notificationId) {
   // console.log('notificationId: ' + notificationId);
-  trackEvent('notificationClicked', 'clicked');
+  trackEvent('event_page', 'notificationClicked', new Date().toString(), 0);
 });
 
 chrome.notifications.onButtonClicked.addListener(function (notificationId, buttonIndex) {
   // console.log('notificationId: ' + notificationId);
   // console.log('buttonIndex: ' + buttonIndex);
-  trackEvent('notificationButtonClicked', 'clicked');
+  trackEvent('event_page', 'notificationButtonClicked', new Date().toString(), 2);
 
   if (notificationId.indexOf(NEW_FEED_ID_PREFIX) !== -1) {
     var feedUrl = notificationId.substr((NEW_FEED_ID_PREFIX).length);
@@ -587,8 +587,8 @@ _gaq.push(['_trackPageview']);
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
 
-function trackEvent(targetName, eventName) {
-  _gaq.push(['_trackEvent', targetName, eventName]);
+function trackEvent(category, action, opt_label, opt_value, opt_noninteraction) {
+  _gaq.push(['_trackEvent', category, action, opt_label, opt_value, opt_noninteraction]);
 }
 
 

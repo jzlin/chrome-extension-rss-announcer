@@ -25,13 +25,19 @@ feedModule.controller('FeedCtrl', [
   $scope.playEntry = function (entry, playNow) {
     if (playNow) {
       chrome.tts.stop();
-      trackEvent('popup', 'playNow');
+      trackEvent('popup', 'playNow', JSON.stringify(entry), 1);
+    }
+    else {
+      trackEvent('popup', 'playEntry', JSON.stringify(entry), 1);
     }
     chrome.runtime.getBackgroundPage(function(window) {
       // console.log(window);
       window.SpeakEntry(entry);
     });
-    trackEvent('popup', 'playEntry');
+  };
+
+  $scope.openLink = function (entry) {
+    trackEvent('popup', 'openLink', JSON.stringify(entry), 1);
   };
 
   $rootScope.messages = {
@@ -71,12 +77,12 @@ feedModule.controller('ToolCtrl', [
         chrome.tts.pause();
       }
     });
-    trackEvent('popup', 'controlPlayer_' + action);
+    trackEvent('popup', 'controlPlayer_' + action, new Date().toString(), 3);
   };
 
   $scope.gotoOptionPage = function () {
     window.open(chrome.extension.getURL('src/option/option.html'), '_blank');
-    trackEvent('popup', 'gotoOptionPage');
+    trackEvent('popup', 'gotoOptionPage', new Date().toString(), 1);
   };
 }]);
 
@@ -92,8 +98,8 @@ _gaq.push(['_trackPageview']);
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
 
-function trackEvent(targetName, eventName) {
-  _gaq.push(['_trackEvent', targetName, eventName]);
+function trackEvent(category, action, opt_label, opt_value, opt_noninteraction) {
+  _gaq.push(['_trackEvent', category, action, opt_label, opt_value, opt_noninteraction]);
 }
 
 
