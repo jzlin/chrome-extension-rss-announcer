@@ -43,7 +43,7 @@
 
 					<div class="ctrl_wrap">
 						<span class="title">{{messages.optionNoticeIntervalTitle}}: </span>
-						<input type="range" class="ctrl" min="5" max="60" step="5" ng-model="noticeInterval" ng-change="updateNotificationSetting()">
+						<input type="range" class="ctrl" min="5" max="60" step="5" ng-model="noticeInterval" ng-change="updateNotificationSetting()" ng-disabled="!enableNotification">
 						<span class="value">{{noticeInterval}} {{messages.optionNoticeIntervalUnitTitle}}</span>
 					</div>
 				</div>
