@@ -73,7 +73,7 @@ function InitAnnouncerSetting() {
   chrome.tts.getVoices(function (voices) {
     if (typeof(voices) !== 'undefined') {
       for (var i = 0; i < voices.length; i++) {
-        if (voices[i].lang === 'zh-CN') {
+        if (voices[i].lang === chrome.i18n.getUILanguage()) {
           defaultsAnnouncerSetting.voice = voices[i];
           break;
         }
@@ -333,11 +333,16 @@ function SpeakEntry(entry) {
     chrome.i18n.getMessage('ttsReadFailWithAuthor', [entry.author, entry.title]) : 
     chrome.i18n.getMessage('ttsReadFail', entry.title);
 
+  var localOptions = {
+    lang: chrome.i18n.getUILanguage(), 
+    enqueue: true,
+  };
+
   if (haveContent) {
-    SpeakSentences(GetSentences(introduction), true);
+    SpeakSentences(GetSentences(introduction), true, localOptions);
   }
   else {
-    SpeakSentences(GetSentences(noContentMessage), true);
+    SpeakSentences(GetSentences(noContentMessage), true, localOptions);
   }
   // console.log(content);
   // console.log(sentences);
@@ -417,7 +422,7 @@ function GetSentences(content) {
   return sentences;
 }
 
-function SpeakSentences(sentences, toLog) {
+function SpeakSentences(sentences, toLog, customOptions) {
   if (typeof(sentences) === 'undefined' || 
     sentences.length === 0) {
     return;
@@ -425,28 +430,43 @@ function SpeakSentences(sentences, toLog) {
   for (var i = 0; i < sentences.length; i++) {
     var sentence = sentences[i].trim();
     if (sentence !== '') {
-      SpeakText(sentence, toLog);
+      SpeakText(sentence, toLog, customOptions);
     }
   }
 }
 
-function SpeakText(text, toLog) {
+function SpeakText(text, toLog, customOptions) {
   if (typeof(text) === 'undefined' ||
     text.trim().length === 0) {
     return;
   }
   if (text.length > MAX_LEN) {
-    SpeakText(text.slice(0, MAX_LEN));
-    SpeakText(text.substr(MAX_LEN));
+    SpeakText(text.slice(0, MAX_LEN), toLog);
+    SpeakText(text.substr(MAX_LEN), toLog);
     return;
   }
 
+  if (toLog) {
+    console.log('will speak: ' + text);
+  }
+  var options = {};
+  if (typeof(customOptions) !== 'undefined') {
+    options = customOptions;
+  }
+  else {
+    options = GetSpeakOptions();
+  }
+  chrome.tts.speak(text, options, function() {
+    if (chrome.runtime.lastError) {
+      console.log('Error：' + chrome.runtime.lastError.message);
+    }
+  });
+}
+
+function GetSpeakOptions() {
   var announcerSetting;
   if (typeof(localStorage.announcerSetting) !== 'undefined') {
     announcerSetting = JSON.parse(localStorage.announcerSetting);
-  }
-  if (toLog) {
-    console.log('will speak: ' + text);
   }
   if (typeof(announcerSetting) === 'undefined' || 
     typeof(announcerSetting.voice) === 'undefined') {
@@ -467,7 +487,7 @@ function SpeakText(text, toLog) {
     extensionId: announcerSetting.voice.extensionId || undefined,
     voiceName: announcerSetting.voice.voiceName || undefined,
     gender: announcerSetting.voice.gender || undefined,
-    lang: announcerSetting.voice.lang || 'zh-CN', 
+    lang: announcerSetting.voice.lang || chrome.i18n.getUILanguage(), 
     rate: announcerSetting.rate || 1.0, 
     pitch: announcerSetting.pitch || 1.0,
     volume: announcerSetting.volume || 1.0,
@@ -479,11 +499,8 @@ function SpeakText(text, toLog) {
       }
     }
   };
-  chrome.tts.speak(text, options, function() {
-    if (chrome.runtime.lastError) {
-      console.log('Error：' + chrome.runtime.lastError.message);
-    }
-  });
+
+  return options;
 }
 
 google.load("feeds", "1");
