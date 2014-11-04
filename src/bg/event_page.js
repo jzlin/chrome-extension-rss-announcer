@@ -73,7 +73,7 @@ function InitAnnouncerSetting() {
   chrome.tts.getVoices(function (voices) {
     if (typeof(voices) !== 'undefined') {
       for (var i = 0; i < voices.length; i++) {
-        if (voices[i].lang === 'zh-CN') {
+        if (voices[i].lang === chrome.i18n.getUILanguage()) {
           defaultsAnnouncerSetting.voice = voices[i];
           break;
         }
@@ -487,7 +487,7 @@ function GetSpeakOptions() {
     extensionId: announcerSetting.voice.extensionId || undefined,
     voiceName: announcerSetting.voice.voiceName || undefined,
     gender: announcerSetting.voice.gender || undefined,
-    lang: announcerSetting.voice.lang || 'zh-CN', 
+    lang: announcerSetting.voice.lang || chrome.i18n.getUILanguage(), 
     rate: announcerSetting.rate || 1.0, 
     pitch: announcerSetting.pitch || 1.0,
     volume: announcerSetting.volume || 1.0,
