@@ -35,7 +35,6 @@ optionModule.controller('MainCtrl', [
 		optionNotificationSettingTitle: chrome.i18n.getMessage('optionNotificationSettingTitle'),
 		optionEnableNotificationTitle: chrome.i18n.getMessage('optionEnableNotificationTitle'),
 		optionNoticeIntervalTitle: chrome.i18n.getMessage('optionNoticeIntervalTitle'),
-		optionNoticeIntervalUnitTitle: chrome.i18n.getMessage('optionNoticeIntervalUnitTitle'),
 
 		optionAnnouncerSettingTitle: chrome.i18n.getMessage('optionAnnouncerSettingTitle'),
 		optionAnnouncerVoiceTitle: chrome.i18n.getMessage('optionAnnouncerVoiceTitle'),
@@ -58,20 +57,9 @@ optionModule.controller('FeedManagementCtrl', [
 	'$scope', 
 	'Storage', 
 	function ($scope, Storage) {
+
+	$scope.loadingSuccess = false;
 	$scope.feedList = [];
-
-	// $scope.feedList.push(new FeedInfo("INSIDE", "http://www.inside.com.tw/feed"));
-	// $scope.feedList.push(new FeedInfo("iThome", "http://www.ithome.com.tw/rss"));
-	// $scope.feedList.push(new FeedInfo("TechOrange", "http://buzzorange.com/techorange/feed/"));
-
-	Storage.get('feedList', function (data) {
-		if (typeof(data) === "object" && typeof(data.length) !== "undefined") {
-			$scope.$apply(function () {
-				$scope.feedList = data;
-			});
-		}
-	});
-
 	$scope.feedTemp = new FeedInfo();
 
 	$scope.removeFeed = function (item) {
@@ -107,42 +95,112 @@ optionModule.controller('FeedManagementCtrl', [
 		Storage.set('feedList', angular.copy($scope.feedList));
 		trackEvent('option', 'updateFeed', JSON.stringify(item), 1);
 	};
+
+	function init() {
+		// $scope.feedList.push(new FeedInfo("INSIDE", "http://www.inside.com.tw/feed"));
+		// $scope.feedList.push(new FeedInfo("iThome", "http://www.ithome.com.tw/rss"));
+		// $scope.feedList.push(new FeedInfo("TechOrange", "http://buzzorange.com/techorange/feed/"));
+
+		Storage.get('feedList', function (data) {
+			if (typeof(data) === "object" && typeof(data.length) !== "undefined") {
+				$scope.$apply(function () {
+					$scope.feedList = data;
+					$scope.loadingSuccess = true;
+				});
+			}
+		});
+	}
+
+	init();
+
 }]);
 
 optionModule.controller('NotificationSettingCtrl', [
 	'$scope',
+	'$timeout',
 	'Storage',
-	function ($scope, Storage) {
+	function ($scope, $timeout, Storage) {
+
+	$scope.loadingSuccess = false;
 	$scope.enableNotification = false;
-	$scope.noticeInterval = 15;
+	$scope.noticeIntervalUnitList = [
+		{
+			unit: chrome.i18n.getMessage('optionNoticeIntervalUnitMinuteTitle'),
+			min: 5,
+			max: 60,
+			step: 5,
+			current: 15,
+			magnification: 1
+		},
+		{
+			unit: chrome.i18n.getMessage('optionNoticeIntervalUnitHourTitle'),
+			min: 1,
+			max: 24,
+			step: 1,
+			current: 6,
+			magnification: 60
+		},
+		{
+			unit: chrome.i18n.getMessage('optionNoticeIntervalUnitDayTitle'),
+			min: 1,
+			max: 7,
+			step: 1,
+			current: 1,
+			magnification: 24 * 60
+		}
+	];
+	$scope.noticeInterval = $scope.noticeIntervalUnitList[0];
 
 	$scope.updateNotificationSetting = function () {
 		// console.log("enter updateNotificationSetting");
 		if (typeof($scope.enableNotification) !== 'boolean' ||
-			$scope.noticeInterval < 5 || $scope.noticeInterval > 60) {
+			$scope.noticeInterval.current < 1 || $scope.noticeInterval.current > 60) {
 			return;
 		}
+		$timeout(function () {
+			document.querySelector('#noticeIntervalRange').value = $scope.noticeInterval.current;
+		});
 		var notificationSetting = {
 			enableNotification: $scope.enableNotification || false,
-			noticeInterval: parseInt($scope.noticeInterval, 10) || 15
+			noticeInterval: $scope.noticeInterval || $scope.noticeIntervalUnitList[0]
 		};
 		// console.log(notificationSetting);
 		Storage.set('notificationSetting', notificationSetting);
 		trackEvent('option', 'updateNotificationSetting', JSON.stringify(notificationSetting), 1);
 	};
 
-	Storage.get('notificationSetting', function (data) {
-		if (typeof(data) === "object") {
-			$scope.$apply(function () {
-				if (typeof(data.enableNotification) === 'boolean') {
-					$scope.enableNotification = data.enableNotification;
-				}
-				if (typeof(data.noticeInterval) !== 'undefined') {
-					$scope.noticeInterval = data.noticeInterval;
-				}
-			});
-		}
-	});
+	function init() {
+		Storage.get('notificationSetting', function (data) {
+			if (typeof(data) === "object") {
+				$scope.$apply(function () {
+					$scope.enableNotification = typeof(data.enableNotification) === 'boolean' ? 
+						data.enableNotification : false;
+					$scope.noticeInterval = $scope.noticeIntervalUnitList[0];
+					if (typeof(data.noticeInterval) !== 'undefined') {
+						for (var i = 0; i < $scope.noticeIntervalUnitList.length; i++) {
+							if ($scope.noticeIntervalUnitList[i].unit === data.noticeInterval.unit) {
+								$scope.noticeIntervalUnitList[i].current = parseInt(data.noticeInterval.current);
+								$scope.noticeInterval = $scope.noticeIntervalUnitList[i];
+								break;
+							}
+						}
+					}
+					// Compatibility Older
+					if (typeof(data.noticeInterval) === 'number') {
+						var tempNumber = parseInt(data.noticeInterval);
+						$scope.noticeIntervalUnitList[0].current = tempNumber;
+						$scope.noticeInterval = $scope.noticeIntervalUnitList[0];
+					}
+					$timeout(function () {
+						document.querySelector('#noticeIntervalRange').value = $scope.noticeInterval.current;
+						$scope.loadingSuccess = true;
+					});
+				});
+			}
+		});
+	}
+
+	init();
 
 }]);
 
@@ -150,6 +208,8 @@ optionModule.controller('AnnouncerSettingCtrl', [
 	'$scope', 
 	'Storage', 
 	function ($scope, Storage) {
+
+	$scope.loadingSuccess = false;
 	$scope.voices = [];
 	$scope.myVoice;
 	$scope.myRate = 1.0;
@@ -207,29 +267,34 @@ optionModule.controller('AnnouncerSettingCtrl', [
 		trackEvent('option', 'updateAnnouncerSetting', JSON.stringify(announcerSetting), 1);
 	};
 
-	Storage.get('announcerSetting', function (data) {
-		if (typeof(data) === "object") {
-			$scope.$apply(function () {
-				if (typeof(data.voice) !== 'undefined') {
-					for (var i = 0; i < $scope.voices.length; i++) {
-						if (data.voice.voiceName === $scope.voices[i].voiceName) {
-							$scope.myVoice = $scope.voices[i];
-							break;
+	function init() {
+		Storage.get('announcerSetting', function (data) {
+			if (typeof(data) === "object") {
+				$scope.$apply(function () {
+					if (typeof(data.voice) !== 'undefined') {
+						for (var i = 0; i < $scope.voices.length; i++) {
+							if (data.voice.voiceName === $scope.voices[i].voiceName) {
+								$scope.myVoice = $scope.voices[i];
+								break;
+							}
 						}
 					}
-				}
-				if (typeof(data.rate) !== 'undefined') {
-					$scope.myRate = data.rate;
-				}
-				if (typeof(data.pitch) !== 'undefined') {
-					$scope.myPitch = data.pitch;
-				}
-				if (typeof(data.volume) !== 'undefined') {
-					$scope.myVolume = data.volume;
-				}
-			});
-		}
-	});
+					if (typeof(data.rate) !== 'undefined') {
+						$scope.myRate = data.rate;
+					}
+					if (typeof(data.pitch) !== 'undefined') {
+						$scope.myPitch = data.pitch;
+					}
+					if (typeof(data.volume) !== 'undefined') {
+						$scope.myVolume = data.volume;
+					}
+					$scope.loadingSuccess = true;
+				});
+			}
+		});
+	}
+
+	init();
 
 }]);
 

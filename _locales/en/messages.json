@@ -39,10 +39,20 @@
     "message":"Notice Interval",
     "description":"notice interval title"
   },
-  "optionNoticeIntervalUnitTitle": 
+  "optionNoticeIntervalUnitMinuteTitle": 
   {
     "message":"minutes",
-    "description":"notice interval unit"
+    "description":"notice interval unit (minute)"
+  },
+  "optionNoticeIntervalUnitHourTitle": 
+  {
+    "message":"hour",
+    "description":"notice interval unit (hour)"
+  },
+  "optionNoticeIntervalUnitDayTitle": 
+  {
+    "message":"day",
+    "description":"notice interval unit (day)"
   },
   "optionAnnouncerSettingTitle": 
   {
