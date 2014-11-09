@@ -102,6 +102,10 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
       typeof(storageChange.newValue) !== 'undefined') {
       localStorage.announcerSetting = JSON.stringify(storageChange.newValue);
     }
+    else if (key === 'notificationSetting' && 
+      typeof(storageChange.newValue) !== 'undefined') {
+      UpdateGetFeedAlarm(storageChange.newValue);
+    }
     else if (key === 'feedList') {
       UpdateFeedsByFeedList();
       GetFeed();
@@ -510,16 +514,23 @@ var storageInBG = storage.local;
 var feeds = [];
 
 storageInBG.get('notificationSetting', function (data) {
+  UpdateGetFeedAlarm(data);
+});
+
+function UpdateGetFeedAlarm (data) {
   var interval = UPDATE_INTERVAL;
   if (typeof(data) !== 'undefined' && 
     typeof(data.noticeInterval) !== 'undefined') {
-    interval = data.noticeInterval;
+    interval = typeof(data.noticeInterval) === 'number' ? 
+      data.noticeInterval : data.noticeInterval.current * data.noticeInterval.magnification;
   }
-  chrome.alarms.create('GetFeed', {
-    when: new Date('2014-10-01').getTime(),
-    periodInMinutes: interval
+  chrome.alarms.clear('GetFeed', function (wasCleared) {
+    chrome.alarms.create('GetFeed', {
+      when: new Date('2014-10-01').getTime(),
+      periodInMinutes: interval
+    });
   });
-});
+}
 
 chrome.alarms.onAlarm.addListener(function (alarm) {
   if (alarm.name === 'GetFeed') {

@@ -43,8 +43,9 @@
 
 					<div class="ctrl_wrap">
 						<span class="title">{{messages.optionNoticeIntervalTitle}}: </span>
-						<input type="range" class="ctrl" min="5" max="60" step="5" ng-model="noticeInterval" ng-change="updateNotificationSetting()" ng-disabled="!enableNotification">
-						<span class="value">{{noticeInterval}} {{messages.optionNoticeIntervalUnitTitle}}</span>
+						<input id="noticeIntervalRange" type="range" class="ctrl" min="{{noticeInterval.min}}" max="{{noticeInterval.max}}" step="{{noticeInterval.step}}" ng-model="noticeInterval.current" ng-change="updateNotificationSetting()" ng-disabled="!enableNotification">
+						<select ng-model="noticeInterval" ng-options="item.unit for item in noticeIntervalUnitList" ng-change="updateNotificationSetting()" ng-disabled="!enableNotification"></select>
+						<span class="value">{{noticeInterval.current}} {{noticeInterval.unit}}</span>
 					</div>
 				</div>
 			</li>

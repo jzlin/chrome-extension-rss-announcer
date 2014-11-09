@@ -35,7 +35,6 @@ optionModule.controller('MainCtrl', [
 		optionNotificationSettingTitle: chrome.i18n.getMessage('optionNotificationSettingTitle'),
 		optionEnableNotificationTitle: chrome.i18n.getMessage('optionEnableNotificationTitle'),
 		optionNoticeIntervalTitle: chrome.i18n.getMessage('optionNoticeIntervalTitle'),
-		optionNoticeIntervalUnitTitle: chrome.i18n.getMessage('optionNoticeIntervalUnitTitle'),
 
 		optionAnnouncerSettingTitle: chrome.i18n.getMessage('optionAnnouncerSettingTitle'),
 		optionAnnouncerVoiceTitle: chrome.i18n.getMessage('optionAnnouncerVoiceTitle'),
@@ -111,20 +110,50 @@ optionModule.controller('FeedManagementCtrl', [
 
 optionModule.controller('NotificationSettingCtrl', [
 	'$scope',
+	'$timeout',
 	'Storage',
-	function ($scope, Storage) {
+	function ($scope, $timeout, Storage) {
 	$scope.enableNotification = false;
-	$scope.noticeInterval = 15;
+	$scope.noticeIntervalUnitList = [
+		{
+			unit: chrome.i18n.getMessage('optionNoticeIntervalUnitMinuteTitle'),
+			min: 5,
+			max: 60,
+			step: 5,
+			current: 15,
+			magnification: 1
+		},
+		{
+			unit: chrome.i18n.getMessage('optionNoticeIntervalUnitHourTitle'),
+			min: 1,
+			max: 24,
+			step: 1,
+			current: 6,
+			magnification: 60
+		},
+		{
+			unit: chrome.i18n.getMessage('optionNoticeIntervalUnitDayTitle'),
+			min: 1,
+			max: 7,
+			step: 1,
+			current: 1,
+			magnification: 24 * 60
+		}
+	];
+	$scope.noticeInterval = $scope.noticeIntervalUnitList[0];
 
 	$scope.updateNotificationSetting = function () {
 		// console.log("enter updateNotificationSetting");
 		if (typeof($scope.enableNotification) !== 'boolean' ||
-			$scope.noticeInterval < 5 || $scope.noticeInterval > 60) {
+			$scope.noticeInterval.current < 1 || $scope.noticeInterval.current > 60) {
 			return;
 		}
+		$timeout(function () {
+			document.querySelector('#noticeIntervalRange').value = $scope.noticeInterval.current;
+		});
 		var notificationSetting = {
 			enableNotification: $scope.enableNotification || false,
-			noticeInterval: parseInt($scope.noticeInterval, 10) || 15
+			noticeInterval: $scope.noticeInterval || $scope.noticeIntervalUnitList[0]
 		};
 		// console.log(notificationSetting);
 		Storage.set('notificationSetting', notificationSetting);
@@ -134,11 +163,23 @@ optionModule.controller('NotificationSettingCtrl', [
 	Storage.get('notificationSetting', function (data) {
 		if (typeof(data) === "object") {
 			$scope.$apply(function () {
-				if (typeof(data.enableNotification) === 'boolean') {
-					$scope.enableNotification = data.enableNotification;
-				}
+				$scope.enableNotification = typeof(data.enableNotification) === 'boolean' ? 
+					data.enableNotification : false;
+				$scope.noticeInterval = $scope.noticeIntervalUnitList[0];
 				if (typeof(data.noticeInterval) !== 'undefined') {
-					$scope.noticeInterval = data.noticeInterval;
+					for (var i = 0; i < $scope.noticeIntervalUnitList.length; i++) {
+						if ($scope.noticeIntervalUnitList[i].unit === data.noticeInterval.unit) {
+							$scope.noticeIntervalUnitList[i].current = parseInt(data.noticeInterval.current);
+							$scope.noticeInterval = $scope.noticeIntervalUnitList[i];
+							break;
+						}
+					}
+				}
+				// Compatibility Older
+				if (typeof($scope.noticeInterval) === 'number') {
+					var tempNumber = parseInt($scope.noticeInterval);
+					$scope.noticeIntervalUnitList[0].current = tempNumber;
+					$scope.noticeInterval = $scope.noticeIntervalUnitList[0];
 				}
 			});
 		}
