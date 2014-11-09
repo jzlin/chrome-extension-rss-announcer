@@ -178,7 +178,7 @@ optionModule.controller('NotificationSettingCtrl', [
 					$scope.noticeInterval = $scope.noticeIntervalUnitList[0];
 					if (typeof(data.noticeInterval) !== 'undefined') {
 						for (var i = 0; i < $scope.noticeIntervalUnitList.length; i++) {
-							if ($scope.noticeIntervalUnitList[i].unit === data.noticeInterval.unit) {
+							if ($scope.noticeIntervalUnitList[i].magnification === data.noticeInterval.magnification) {
 								$scope.noticeIntervalUnitList[i].current = parseInt(data.noticeInterval.current);
 								$scope.noticeInterval = $scope.noticeIntervalUnitList[i];
 								break;
