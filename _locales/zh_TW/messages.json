@@ -39,10 +39,20 @@
     "message":"通知週期",
     "description":"通知週期標題"
   },
-  "optionNoticeIntervalUnitTitle": 
+  "optionNoticeIntervalUnitMinuteTitle": 
   {
     "message":"分鐘",
-    "description":"通知週期單位"
+    "description":"通知週期單位 (分鐘)"
+  },
+  "optionNoticeIntervalUnitHourTitle": 
+  {
+    "message":"小時",
+    "description":"通知週期單位 (小時)"
+  },
+  "optionNoticeIntervalUnitDayTitle": 
+  {
+    "message":"天",
+    "description":"通知週期單位 (天)"
   },
   "optionAnnouncerSettingTitle": 
   {
