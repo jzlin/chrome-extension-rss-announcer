@@ -14,7 +14,7 @@
 			<span>{{messages.extActionTitle}} - {{messages.optionTitle}}</span>
 		</div>
 		<ul class="option-list">
-			<li class="option" ng-controller="FeedManagementCtrl">
+			<li class="option" ng-controller="FeedManagementCtrl" ng-show="loadingSuccess">
 				<div class="option-title">{{messages.optionFeedManagementTitle}}</div>
 				<div class="option-content">
 					<div class="feed-info" ng-repeat="item in feedList">
@@ -33,7 +33,7 @@
 					</div>
 				</div>
 			</li>
-			<li class="option" ng-controller="NotificationSettingCtrl">
+			<li class="option" ng-controller="NotificationSettingCtrl" ng-show="loadingSuccess">
 				<div class="option-title">{{messages.optionNotificationSettingTitle}}</div>
 				<div class="option-content">
 					<div class="ctrl_wrap">
@@ -49,7 +49,7 @@
 					</div>
 				</div>
 			</li>
-			<li class="option" ng-controller="AnnouncerSettingCtrl">
+			<li class="option" ng-controller="AnnouncerSettingCtrl" ng-show="loadingSuccess">
 				<div class="option-title">{{messages.optionAnnouncerSettingTitle}}</div>
 				<div class="option-content">
 					<div class="ctrl_wrap">
