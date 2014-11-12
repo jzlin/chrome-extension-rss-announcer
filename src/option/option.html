@@ -4,8 +4,11 @@
 	<meta charset="utf-8">
 	<title>{{messages.extActionTitle}} - {{messages.optionTitle}}</title>
 	<link rel="stylesheet" href="css/option.css">
+	<script type="text/javascript" src="../../js/jquery.js"></script>
+	<script type="text/javascript" src="../../js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="../../js/angular.min.js"></script>
 	<script type="text/javascript" src="../../js/angular-resource.min.js"></script>
+	<script type="text/javascript" src="../../js/sortable.js"></script>
 </head>
 <body ng-controller="MainCtrl">
 	<div id="optionContainer">
@@ -17,11 +20,13 @@
 			<li class="option" ng-controller="FeedManagementCtrl" ng-show="loadingSuccess">
 				<div class="option-title">{{messages.optionFeedManagementTitle}}</div>
 				<div class="option-content">
-					<div class="feed-info" ng-repeat="item in feedList">
-						<span class="index">{{$index + 1}}</span>
-						<input class="title" type="text" ng-model="item.title" ng-change="updateFeed(item)"> -
-						<input class="url" type="url" ng-model="item.url" ng-change="updateFeed(item)">
-						<button ng-click="removeFeed(item)">{{messages.operationRemoveStr}}</button>
+					<div ui-sortable="sortableOptions" ng-model="feedList">
+						<div class="feed-info" ng-repeat="item in feedList">
+							<span class="index">{{$index + 1}}</span>
+							<input class="title" type="text" ng-model="item.title" ng-change="updateFeed(item)"> -
+							<input class="url" type="url" ng-model="item.url" ng-change="updateFeed(item)">
+							<button ng-click="removeFeed(item)">{{messages.operationRemoveStr}}</button>
+						</div>
 					</div>
 					<hr>
 					<br>	
