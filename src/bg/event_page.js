@@ -124,11 +124,11 @@ function UpdateFeedsByFeedList () {
         var feeds = data;
         if (typeof(feeds) !== 'undefined') {
           var newFeeds = [];
-          for (var i = 0; i < feeds.length; i++) {
-            for (var j = 0; j < feedList.length; j++) {
-              if (feedList[j].url === feeds[i].feedUrl) {
-                feeds[i].customTitle = feedList[j].title;
-                newFeeds.push(feeds[i]);
+          for (var i = 0; i < feedList.length; i++) {
+            for (var j = 0; j < feeds.length; j++) {
+              if (feedList[i].url === feeds[j].feedUrl) {
+                feeds[j].customTitle = feedList[i].title;
+                newFeeds.push(feeds[j]);
               }
             }
           }
@@ -562,7 +562,18 @@ function GetFeed() {
             feed.customTitle = feedInfo.title;
             AddFeed(feed);
             if (feeds.length === feedSources.length) {
-              storageInBG.set('feeds', feeds);
+              (function (feedList, feeds) {
+                var sortedFeeds = [];
+                for (var i = 0; i < feedList.length; i++) {
+                  for (var j = 0; j < feeds.length; j++) {
+                    if (feedList[i].url === feeds[j].feedUrl) {
+                      feeds[j].customTitle = feedList[i].title;
+                      sortedFeeds.push(feeds[j]);
+                    }
+                  }
+                }
+                storageInBG.set('feeds', sortedFeeds);
+              }(feedSources, feeds));
             }
           }
         });

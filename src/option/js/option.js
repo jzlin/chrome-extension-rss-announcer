@@ -1,7 +1,7 @@
 
 (function () {
 
-var optionModule = angular.module('optionModule', []);
+var optionModule = angular.module('optionModule', ['ui.sortable']);
 
 optionModule.service('Storage', function () {
 	// todo: 搬到事件頁面去
@@ -55,12 +55,23 @@ function FeedInfo(title, url) {
 
 optionModule.controller('FeedManagementCtrl', [
 	'$scope', 
+	'$timeout',
 	'Storage', 
-	function ($scope, Storage) {
+	function ($scope, $timeout, Storage) {
 
 	$scope.loadingSuccess = false;
 	$scope.feedList = [];
 	$scope.feedTemp = new FeedInfo();
+
+	$scope.sortableOptions = {
+		update: function (e, ui) {
+			$timeout(function () {
+				Storage.set('feedList', angular.copy($scope.feedList));
+				trackEvent('option', 'updateFeedSort', JSON.stringify($scope.feedList), 1);
+			});
+		},
+		axis: 'y'
+	};
 
 	$scope.removeFeed = function (item) {
 		var idx = $scope.feedList.indexOf(item);

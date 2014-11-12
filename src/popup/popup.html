@@ -20,7 +20,7 @@
 			<i class="float-right play" ng-click="controlPlayer('play')"></i>
 		</div>
 		<div id="feedContainer">
-			<div class="feed" ng-repeat="feed in feeds | orderBy:'title'">
+			<div class="feed" ng-repeat="feed in feeds">
 				<h3>
 					<a href="{{feed.link}}" target="_blank">{{feed.customTitle}}</a>
 				</h3>
