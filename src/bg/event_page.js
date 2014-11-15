@@ -382,6 +382,14 @@ function GetFeed() {
             for (var j = 0; j < feed.entries.length; j++) {
               var publishedDate = new Date(feed.entries[j].publishedDate);
               feed.entries[j].publishedDateStr = publishedDate.getTime();
+
+              if (feed.entries[j].link.indexOf('http') !== 0 && 
+                feed.feedUrl.indexOf('http') === 0) {
+                var arr = feed.feedUrl.split('://');
+                var protocal = arr[0];
+                var domain = arr[1].split('/')[0];
+                feed.entries[j].link = protocal + '://' + domain + feed.entries[j].link;
+              }
             }
             feed.customTitle = feedInfo.title;
             AddFeed(feed);
