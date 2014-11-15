@@ -14,10 +14,18 @@
 				<i></i>
 				{{messages.extActionTitle}}
 			</span>
-			<i class="float-right setting" ng-click="gotoOptionPage()"></i>
-			<i class="float-right stop" ng-click="controlPlayer('stop')"></i>
-			<i class="float-right pause" ng-click="controlPlayer('pause')"></i>
-			<i class="float-right play" ng-click="controlPlayer('play')"></i>
+			<button class="float-right" ng-click="gotoOptionPage()">
+				<i class="setting"></i>
+			</button>
+			<button class="float-right" ng-click="controlPlayer('stop')" ng-disabled="!control.canStop">
+				<i class="stop"></i>
+			</button>
+			<button class="float-right" ng-click="controlPlayer('pause')" ng-disabled="!control.canPause">
+				<i class="pause"></i>
+			</button>
+			<button class="float-right" ng-click="controlPlayer('play')" ng-disabled="!control.canPlay">
+				<i class="play"></i>
+			</button>
 		</div>
 		<div id="feedContainer">
 			<div class="feed" ng-repeat="feed in feeds">

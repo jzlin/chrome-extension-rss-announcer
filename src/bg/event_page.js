@@ -278,12 +278,9 @@ chrome.notifications.onButtonClicked.addListener(function (notificationId, butto
   if (notificationId.indexOf(NEW_FEED_ID_PREFIX) !== -1) {
     var feedUrl = notificationId.substr((NEW_FEED_ID_PREFIX).length);
     // console.log(feedUrl);
-    if (buttonIndex === 1) {
-      chrome.tts.stop();
-    }
     GetNewFeedByUrl(feedUrl, function (feed) {
       // console.log(feed);
-      SpeakFeed(feed);
+      SpeakFeed(feed, buttonIndex === 1);
     });
   }
 });
@@ -306,19 +303,19 @@ function GetNewFeedByUrl(feedUrl, callback) {
 }
 
 window.SpeakFeed = SpeakFeed;
-function SpeakFeed(feed) {
+function SpeakFeed(feed, playNow) {
   if (typeof(feed) === 'undefined' || 
     typeof(feed.entries) === 'undefined') {
     return;
   }
   for (var i = 0; i < feed.entries.length; i++) {
     var entry = feed.entries[i];
-    SpeakEntry(entry);
+    SpeakEntry(entry, playNow);
   }
 }
 
 window.SpeakEntry = SpeakEntry;
-function SpeakEntry(entry) {
+function SpeakEntry(entry, playNow) {
   if (typeof(entry) === 'undefined') {
     return;
   }
@@ -326,185 +323,12 @@ function SpeakEntry(entry) {
   divElement.style.cssText = "display: none;";
   divElement.innerHTML = entry.content;
   var content = divElement.innerText.trim() || entry.contentSnippet;
-  var sentences = GetSentences(content);
-  var haveContent = typeof(content) !== 'undefined' && content.trim().length > 0;
-  
-  var introduction = entry.author.length > 0 ? 
-    chrome.i18n.getMessage('ttsIntroductionWithAuthor', [entry.author, entry.title]) : 
-    chrome.i18n.getMessage('ttsIntroduction', entry.title);
-  
-  var noContentMessage = entry.author.length > 0 ? 
-    chrome.i18n.getMessage('ttsReadFailWithAuthor', [entry.author, entry.title]) : 
-    chrome.i18n.getMessage('ttsReadFail', entry.title);
-
-  var localOptions = {
-    lang: chrome.i18n.getUILanguage(), 
-    enqueue: true,
-  };
-
-  if (haveContent) {
-    SpeakSentences(GetSentences(introduction), true, localOptions);
-  }
-  else {
-    SpeakSentences(GetSentences(noContentMessage), true, localOptions);
-  }
-  // console.log(content);
-  // console.log(sentences);
-  SpeakSentences(sentences);
-  // 文章結束後的休息時間
-  if (haveContent) {
-    for (var j = 0; j < 5; j++) {
-      SpeakText('');
-    }
-  }
-}
-
-function GetSentences(content) {
-  if (typeof(content) === 'undefined' || typeof(content.substr) !== 'function') {
-    return [];
-  }
-  var spliters = content.match(/[\⋯\·\．\，\。\！\？\：\；\,\;\n\.\!\?\:]/g);
-  var sentences = [];
-  while (content.length > 0) {
-    var sentence;
-    var spliter = (spliters != null && spliters.length > 0) ? 
-      spliters[0] : undefined;
-    var doAppend = true;
-    if (typeof(spliter) !== 'undefined') {
-      var idx = content.indexOf(spliter);
-      // 若 spliter 為起始位置，則去掉起始位置的 spliter 再重來。
-      if (idx === 0) {
-        content = content.substr(spliter.length);
-        spliters.splice(0, 1);
-        continue;
-      }
-      else if ((idx + spliter.length) <= content.length) {
-        sentence = content.slice(0, idx + spliter.length);
-        content = content.substr(idx + spliter.length);
-        spliters.splice(0, 1);
-      }
-      else {
-        content = '';
-      }
-      doAppend = doAppend && 
-        (['，', '。', '！', '？', '：', '!', '?', ':'].indexOf(spliter) === -1);
-    }
-    else {
-      sentence = content;
-      content = '';
-    }
-    if (typeof(sentence) !== 'undefined') {
-      if (sentence.length <= MAX_LEN) {
-        doAppend = doAppend && 
-          sentences.length > 0 &&
-          (sentences[sentences.length - 1].length + sentence.length) <= MAX_LEN;
-        if (doAppend) {
-          sentences[sentences.length - 1] += sentence;
-        }
-        else {
-          sentences.push(sentence);
-        }
-      }
-      else {
-        while (sentence.length > 0) {
-          var subSentence;
-          if (sentence.length > MAX_LEN) {
-            subSentence = sentence.slice(0, MAX_LEN);
-            sentence = sentence.substr(MAX_LEN);
-          }
-          else {
-            subSentence = sentence;
-            sentence = '';
-          }
-          if (typeof(subSentence) !== 'undefined') {
-            sentences.push(subSentence);
-          }
-        }
-      }
-    }
-  }
-  return sentences;
-}
-
-function SpeakSentences(sentences, toLog, customOptions) {
-  if (typeof(sentences) === 'undefined' || 
-    sentences.length === 0) {
-    return;
-  }
-  for (var i = 0; i < sentences.length; i++) {
-    var sentence = sentences[i].trim();
-    if (sentence !== '') {
-      SpeakText(sentence, toLog, customOptions);
-    }
-  }
-}
-
-function SpeakText(text, toLog, customOptions) {
-  if (typeof(text) === 'undefined' ||
-    text.trim().length === 0) {
-    return;
-  }
-  if (text.length > MAX_LEN) {
-    SpeakText(text.slice(0, MAX_LEN), toLog);
-    SpeakText(text.substr(MAX_LEN), toLog);
-    return;
-  }
-
-  if (toLog) {
-    console.log('will speak: ' + text);
-  }
-  var options = {};
-  if (typeof(customOptions) !== 'undefined') {
-    options = customOptions;
-  }
-  else {
-    options = GetSpeakOptions();
-  }
-  chrome.tts.speak(text, options, function() {
-    if (chrome.runtime.lastError) {
-      console.log('Error：' + chrome.runtime.lastError.message);
-    }
-  });
-}
-
-function GetSpeakOptions() {
-  var announcerSetting;
-  if (typeof(localStorage.announcerSetting) !== 'undefined') {
-    announcerSetting = JSON.parse(localStorage.announcerSetting);
-  }
-  if (typeof(announcerSetting) === 'undefined' || 
-    typeof(announcerSetting.voice) === 'undefined') {
-    announcerSetting = {
-      voice: {
-        extensionId: undefined,
-        voiceName: undefined,
-        gender: undefined,
-        lang: undefined
-      },
-      rate: 1.0,
-      pitch: 1.0,
-      volume: 1.0
-    };
-  }
-  // console.log(announcerSetting);
-  var options = {
-    extensionId: announcerSetting.voice.extensionId || undefined,
-    voiceName: announcerSetting.voice.voiceName || undefined,
-    gender: announcerSetting.voice.gender || undefined,
-    lang: announcerSetting.voice.lang || chrome.i18n.getUILanguage(), 
-    rate: announcerSetting.rate || 1.0, 
-    pitch: announcerSetting.pitch || 1.0,
-    volume: announcerSetting.volume || 1.0,
-    enqueue: true,
-    onEvent: function (event) {
-      // console.log("在位置 " + event.charIndex + " 處產生事件 " + event.type);
-      if (event.type === 'error') {
-        console.log('錯誤：' + event.errorMessage);
-      }
-    }
-  };
-
-  return options;
+  announcer.SpeakArticle({
+    title: entry.title,
+    author: entry.author,
+    content: content,
+    link: entry.link
+  }, playNow);
 }
 
 google.load("feeds", "1");

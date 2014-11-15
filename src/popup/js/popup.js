@@ -13,6 +13,17 @@ feedModule.controller('FeedCtrl', [
   '$scope', 
   'Storage', 
   function ($rootScope, $scope, Storage) {
+
+  chrome.tts.isSpeaking(function(speaking) {
+    var haveQueue = JSON.parse(localStorage.sentenceQueueName).length > 0 || 
+                    JSON.parse(localStorage.articleQueueName).length > 0
+    $rootScope.control = {
+      canStop: speaking || haveQueue,
+      canPause: speaking,
+      canPlay: !speaking && haveQueue
+    };
+  });
+
   $scope.feeds = [];
   Storage.get('feeds', function (data) {
     if (typeof(data) !== 'undefined' && typeof(data.length) !== 'undefined') {
@@ -23,8 +34,10 @@ feedModule.controller('FeedCtrl', [
   });
 
   $scope.playEntry = function (entry, playNow) {
+    $rootScope.control.canStop = true;
+    $rootScope.control.canPause = true;
+    $rootScope.control.canPlay = false;
     if (playNow) {
-      chrome.tts.stop();
       trackEvent('popup', 'playNow', JSON.stringify(entry), 1);
     }
     else {
@@ -32,7 +45,7 @@ feedModule.controller('FeedCtrl', [
     }
     chrome.runtime.getBackgroundPage(function(window) {
       // console.log(window);
-      window.SpeakEntry(entry);
+      window.SpeakEntry(entry, playNow);
     });
   };
 
@@ -47,34 +60,25 @@ feedModule.controller('FeedCtrl', [
 }]);
 
 feedModule.controller('ToolCtrl', [
+  '$rootScope', 
   '$scope', 
-  function ($scope) {
+  function ($rootScope, $scope) {
+
   $scope.controlPlayer = function (action) {
-    chrome.tts.isSpeaking(function (speaking) {
-      // console.log('speaking: ' + speaking);
+    $rootScope.control.canStop = action !== 'stop';
+    $rootScope.control.canPause = action === 'play';
+    $rootScope.control.canPlay = action === 'pause';
+
+    chrome.runtime.getBackgroundPage(function(window) {
+      // console.log(window);
       if (action === 'stop') {
-        chrome.tts.stop();
+        window.announcer.StopAllArticle();
       }
       else if (action === 'play') {
-        if (speaking) {
-          chrome.tts.resume();
-        }
-        else {
-          chrome.runtime.getBackgroundPage(function(window) {
-            // console.log(window);
-            // console.log($scope.feeds);
-            for (var i = 0; i < $scope.feeds.length; i++) {
-              (function (feed) {
-                setTimeout(function () {
-                  window.SpeakFeed(feed);
-                }, i * 1000);
-              }($scope.feeds[i]));
-            }
-          });
-        }
+        window.announcer.Resume();
       }
       else if (action === 'pause') {
-        chrome.tts.pause();
+        window.announcer.Pause();
       }
     });
     trackEvent('popup', 'controlPlayer_' + action, new Date().toString(), 3);
