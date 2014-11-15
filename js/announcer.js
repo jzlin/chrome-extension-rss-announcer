@@ -56,7 +56,7 @@
       if (typeof(content) === 'undefined' || typeof(content.substr) !== 'function') {
         return [];
       }
-      var spliters = content.match(/[\⋯\·\．\，\。\！\？\：\；\,\;\n\.\!\?\:]/g);
+      var spliters = content.match(/[ \⋯\·\．\，\。\！\？\：\；\,\;\n\.\!\?\:]/g);
       var sentences = [];
       while (content.length > 0) {
         var sentence;
@@ -79,7 +79,7 @@
             content = '';
           }
           doAppend = doAppend && 
-            (['，', '。', '！', '？', '：', '!', '?', ':', '\n'].indexOf(spliter) === -1);
+            (['，', '。', '！', '？', '：', '!', '?', ':'].indexOf(spliter) === -1);
         }
         else {
           sentence = content;
